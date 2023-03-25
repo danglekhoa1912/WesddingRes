@@ -1,0 +1,53 @@
+{
+  "screen": {
+    "lobby": {
+      "title": "Lobby",
+      "placeholder_search": "Enter the lobby you are looking for",
+      "view_detail": "View Detail",
+      "choose_lobby": "Choose Lobby",
+      "name": "Lobby Name"
+    },
+    "dish": {
+      "title": "Dish",
+      "mainDishes": "Main Dishes",
+      "dessert": "Dessert",
+      "drink": "Drink",
+      "starter": "Starter",
+      "placeholder_search": "Enter the food you are looking for"
+    },
+    "service": {
+      "title": "Service",
+      "placeholder_search": "Enter the service you are looking for"
+    },
+    "booking": {
+      "title": "Booking",
+      "change_lobby": "Change Lobby",
+      "booking_date": "Booking Date",
+      "session": "Session",
+      "placeholder_session": "",
+      "type_party": "Type Party",
+      "placeholder_type_party": "",
+      "placeholder_capacity": "Please enter the number of tables"
+    }
+  },
+  "common": {
+    "next": "Next",
+    "price": "Price",
+    "capacity": "Capacity",
+    "send": "Send",
+    "select": "Select",
+    "unselect": "Unselect",
+    "see_all": "See All"
+  },
+  "form": {
+    "logout": "Log Out",
+    "logIn": "Log In",
+    "register": "Register",
+    "email": "Email",
+    "name": "Name",
+    "password": "Password",
+    "mobile": "Mobile",
+    "birthday": "Birthday",
+    "avatar": "Avatar"
+  }
+}

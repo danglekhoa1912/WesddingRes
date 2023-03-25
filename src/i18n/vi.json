@@ -1,0 +1,40 @@
+{
+  "screen": {
+    "lobby": {
+      "title": "Sảnh",
+      "placeholder_search": "Nhập sảnh cần tìm",
+      "view_detail": "xem Chi Tiết",
+      "choose_lobby": "Chọn Sảnh"
+    },
+    "dish": {
+      "title": "Món Ăn",
+      "mainDishes": "Món Chính",
+      "dessert": "Tráng Miệng",
+      "drink": "Thức Uống",
+      "starter": "Món Khai Vị",
+      "placeholder_search": "Nhập món ăn cần tìm"
+    },
+    "service": {
+      "title": "Dịch Vụ",
+      "placeholder_search": "Nhập dịch vụ cần tìm"
+    }
+  },
+  "common": {
+    "next": "Tiếp tục",
+    "price": "Giá",
+    "capacity": "Sức Chứa",
+    "send": "Gửi",
+    "select": "Chọn",
+    "unselect": "Bỏ Chọn"
+  },
+  "form": {
+    "logIn": "Đăng Nhập",
+    "register": "Đăng Ký",
+    "email": "Email",
+    "name": "Tên",
+    "password": "Mật Khẩu",
+    "mobile": "Số Điện Thoại",
+    "birthday": "Ngày Sinh",
+    "avatar": "Ảnh Đại Diện"
+  }
+}

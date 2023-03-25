@@ -1,0 +1,40 @@
+{
+  "project_info": {
+    "project_number": "542612926090",
+    "firebase_url": "https://quanlynhahang-3074c-default-rtdb.firebaseio.com",
+    "project_id": "quanlynhahang-3074c",
+    "storage_bucket": "quanlynhahang-3074c.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:542612926090:android:1c22cba95494bf605c4773",
+        "android_client_info": {
+          "package_name": "com.quan_ly_nha_hang"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "542612926090-9frlv79265veb0jdi410tknghgbs47nu.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyCOhYSWaGxiIF98PAe9PslK1lo-WzDRylg"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "542612926090-9frlv79265veb0jdi410tknghgbs47nu.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

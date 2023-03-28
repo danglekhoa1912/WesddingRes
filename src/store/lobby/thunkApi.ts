@@ -1,13 +1,18 @@
 import {ILobbyStore} from './index';
-import {ActionReducerMapBuilder, createAsyncThunk} from '@reduxjs/toolkit';
+import {
+  ActionReducerMapBuilder,
+  createAsyncThunk,
+  PayloadAction,
+} from '@reduxjs/toolkit';
 import {LobbyApi} from '../../apis';
 import {ILobbyRes} from '../../type/lobby';
+import {IServiceRequestParams} from '../../type/service';
 
 export const getLobbyById = createAsyncThunk(
   'lobby/getLobbyById',
   async (id: number) => {
     const result = await LobbyApi.getLobbyById(id);
-    return result;
+    return result.data;
   },
 );
 
@@ -19,10 +24,13 @@ export const addLooby = createAsyncThunk(
   },
 );
 
-export const getLobbyList = createAsyncThunk('lobby/getLobbyList', async () => {
-  const result = await LobbyApi.getLobbyList();
-  return result;
-});
+export const getLobbyList = createAsyncThunk(
+  'lobby/getLobbyList',
+  async (params: IServiceRequestParams) => {
+    const result = await LobbyApi.getLobbyList(params);
+    return result.data;
+  },
+);
 
 export const updateLobby = createAsyncThunk(
   'lobby/updateLobby',
@@ -41,4 +49,11 @@ export const deleteLobby = createAsyncThunk(
 );
 export const extraReducers = (
   builders: ActionReducerMapBuilder<ILobbyStore>,
-) => {};
+) => {
+  builders.addCase(
+    getLobbyById.fulfilled,
+    (state: ILobbyStore, action: PayloadAction<any>) => {
+      return action.payload;
+    },
+  );
+};

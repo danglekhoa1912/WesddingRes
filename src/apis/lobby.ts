@@ -1,12 +1,15 @@
 import {ILobbyRes} from './../type/lobby';
 import AxiosClient from '.';
+import {IServiceRequestParams} from '../type/service';
 
-export const getLobbyList = () => {
-  return AxiosClient.get('order/weddinghall/getall');
+export const getLobbyList = (params: IServiceRequestParams) => {
+  return AxiosClient.get('order/weddinghall/get-all-wedding-hall', {
+    params: params,
+  });
 };
 
 export const getLobbyById = (id: number) => {
-  return AxiosClient.get(`order/weddinghall/getall?id=${id}`);
+  return AxiosClient.get(`order/weddinghall/get-detail-wdh?idHall=${id}`);
 };
 
 export const addLooby = (lobby: ILobbyRes) => {

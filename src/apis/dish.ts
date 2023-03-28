@@ -2,18 +2,18 @@ import AxiosClient from '.';
 import {IDishRes, IRequestParams} from '../type/dish';
 
 export const getDishList = (params: IRequestParams) => {
-  const {categoryId = 1, page = 1, searchByName = ''} = params;
-  return AxiosClient.get(`order/dish`, {
+  const {categoryId = 2, page = 1, searchByName = ''} = params;
+  return AxiosClient.get(`order/dish/categoryId`, {
     params: {
       page,
       searchByName,
-      categoryId,
+      i: categoryId,
     },
   });
 };
 
 export const getCategories = () => {
-  return AxiosClient.get('order/dish/getcate');
+  return AxiosClient.get('order/dish/get-category');
 };
 
 export const addDish = (dish: IDishRes) => {

@@ -12,7 +12,7 @@ export const loginUser = createAsyncThunk(
   'user/login',
   async (data: ILoginRes) => {
     const result = await UserApi.login(data);
-    return result;
+    return result.data;
   },
 );
 
@@ -26,7 +26,8 @@ export const registerUser = createAsyncThunk(
 
 export const getUser = createAsyncThunk('user/getUser', async () => {
   const result = await UserApi.getUser();
-  return result;
+  console.log(result);
+  return result.data;
 });
 
 export const getOrderHistory = createAsyncThunk(

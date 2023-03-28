@@ -4,8 +4,15 @@ import React from 'react';
 import {COLORS} from '../../utils/color';
 import {Logo} from '../../assets';
 import {navigate} from '../../utils/navigate';
+import {getStorage} from '../../utils/storage';
 
 const WelcomePage = () => {
+  getStorage('accessToken').then(token => {
+    if (token) {
+      navigate('DrawerScreen');
+    }
+  });
+
   return (
     <View style={styles.root}>
       <View style={styles.content}>

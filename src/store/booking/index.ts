@@ -1,11 +1,14 @@
+import {ILobby, ITypeParty} from './../../type/lobby';
 import {createSlice} from '@reduxjs/toolkit';
-import {CASH_TYPE} from '../../type/booking';
+import {CASH_TYPE, ISession} from '../../type/booking';
 import {IDish} from '../../type/dish';
 import {IService} from '../../type/service';
 import {reducer} from './reducer';
+import {ISelectItem} from '../../type/common';
+import {extraReducers} from './thunkApi';
 
 export interface IBookingStore {
-  booking: {
+  order: {
     menu: {
       dishList: IDish[];
       total: number;
@@ -15,17 +18,20 @@ export interface IBookingStore {
       total: number;
     };
     date: Date;
-    lobbyId: number;
-    time: string;
+    lobby: ILobby;
+    time: ISelectItem;
+    type_party: ISelectItem;
     quantityTable: number;
     type_pay: CASH_TYPE;
     lobbyPriceByTime: number;
     note: string;
   };
+  typeTime: ISession[];
+  typeParty: ITypeParty[];
 }
 
 const initialState = {
-  booking: {
+  order: {
     menu: {
       dishList: [],
       total: 0,
@@ -35,20 +41,39 @@ const initialState = {
       total: 0,
     },
     date: new Date(),
-    lobbyId: 0,
-    time: '',
+    time: {
+      id: 0,
+      label: '',
+      value: 0,
+    },
     quantityTable: 0,
     type_pay: CASH_TYPE.CASH,
     lobbyPriceByTime: 0,
     note: '',
+    lobby: {
+      capacity: 0,
+      describe: '',
+      id: 0,
+      image: '',
+      name: '',
+      price: 0,
+      status: '',
+    },
+    type_party: {
+      id: 0,
+      label: '',
+      value: 0,
+    },
   },
+  typeParty: [],
+  typeTime: [],
 } as IBookingStore;
 
 const bookingSlice = createSlice({
   name: 'booking',
   initialState,
   reducers: reducer,
-  // extraReducers:''
+  extraReducers: extraReducers,
 });
 
 export const {

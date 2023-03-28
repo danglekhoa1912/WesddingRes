@@ -44,7 +44,11 @@ function Select<T extends FieldValues>({
               size="large"
               {...otherProps}>
               {options.map(item => (
-                <SelectItem key={item.id} title={item.label} />
+                <SelectItem
+                  disabled={item?.disabled || false}
+                  key={item.id}
+                  title={item.label}
+                />
               ))}
             </SelectDefault>
             {error && (
@@ -61,12 +65,11 @@ export default Select;
 
 const styles = StyleSheet.create({
   root: {
-    marginVertical: 10,
     width: '100%',
   },
   field: {},
   error: {
-    color: 'white',
+    color: 'red',
     paddingTop: 8,
     paddingLeft: 12,
   },

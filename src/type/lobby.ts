@@ -8,6 +8,11 @@ export interface ILobby {
   id: number;
 }
 
+export interface IILoobyBooked{
+	date:Date
+	session:number
+}
+
 export interface ITypeParty {
   id: number;
   nameParty: string;

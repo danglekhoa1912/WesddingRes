@@ -3,23 +3,28 @@ import React from 'react';
 import ItemInforLooby from '../ItemInforLobby';
 import {useSelector} from 'react-redux';
 import moment from 'moment';
-import {Text} from '../../../../components';
+import {Text} from '@ui-kitten/components';
+import {AppState} from '../../../../store';
+import {IBookingStore} from '../../../../store/booking';
 
 const CardInforLobby = () => {
+  const pBooking = useSelector<AppState, IBookingStore>(
+    state => state.booking,
+  ).order;
+
   return (
     <View style={styles.container_infor_lobby}>
-      <Text>Chi tiết hóa đơn</Text>
+      <Text category="h5">Chi tiết hóa đơn</Text>
       <ItemInforLooby iconName="hoop-house" title="Tên sảnh">
         {/* {booking.lobby.name} */}
         Rose
       </ItemInforLooby>
       <ItemInforLooby iconName="table-furniture" title="Số Lượng bàn">
-        {/* {booking.quantityTable} */}
+        {pBooking.quantityTable}
         12
       </ItemInforLooby>
       <ItemInforLooby iconName="calendar" title="Ngày đặt">
-        {/* {moment(booking.date).format("DD/MM/YYYY")} - Sáng */}
-        12/12/2023
+        {moment(pBooking.date).format('DD/MM/YYYY')} - Sáng 12/12/2023
       </ItemInforLooby>
     </View>
   );

@@ -25,8 +25,9 @@ export const register = (user: IUser) => {
 
 export const login = (data: ILoginRes) => {
   return AxiosClient.post('auth/login', {
-    username: data.email,
+    username: data.username,
     password: data.password,
+    token: data.tokenDevice,
   });
 };
 

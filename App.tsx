@@ -8,44 +8,26 @@ import * as eva from '@eva-design/eva';
 import React, {useEffect, useState} from 'react';
 import type {PropsWithChildren} from 'react';
 import {
+  Alert,
+  PermissionsAndroid,
   SafeAreaView,
-  ScrollView,
-  StatusBar,
   StyleSheet,
-  Text,
   useColorScheme,
-  View,
 } from 'react-native';
 import './src/i18n/i18n';
-
-import {
-  Colors,
-  DebugInstructions,
-  Header,
-  LearnMoreLinks,
-  ReloadInstructions,
-} from 'react-native/Libraries/NewAppScreen';
-import {useTranslation} from 'react-i18next';
 import {store} from './src/store';
-import LoginPage from './src/screens/Login';
 import {ApplicationProvider, Layout} from '@ui-kitten/components';
 import {default as theme} from './theme.json';
-import ImgPicker from './src/components/ImgPicker';
-import LobbyPage from './src/screens/Lobby';
-import RegisterPage from './src/screens/Register';
-import LobbyDetailPage from './src/screens/LobbyDetail';
-import DishPage from './src/screens/Dish';
-import ServicePage from './src/screens/Service';
-import BookingPage from './src/screens/Booking';
 import RootNavigate from './src/navigation/RootNavigate';
 import {NavigationContainer} from '@react-navigation/native';
 import {navigationRef} from './src/utils/navigate';
 import {Provider} from 'react-redux';
+import messaging, {firebase} from '@react-native-firebase/messaging';
 
 type SectionProps = PropsWithChildren<{
   title: string;
 }>;
-
+PermissionsAndroid.request(PermissionsAndroid.PERMISSIONS.POST_NOTIFICATIONS);
 export const stotreManagement = store;
 
 // function Section({children, title}: SectionProps): JSX.Element {
@@ -86,6 +68,36 @@ function App(): JSX.Element {
   //   const backgroundStyle = {
   //     backgroundColor: isDarkMode ? Colors.darker : Colors.lighter,
   //   };
+
+  //   const registerFCM = async () => {
+  //     try {
+  //       await messaging().requestPermission();
+  //     } catch (error) {
+  //       console.log('permission rejected');
+  //     }
+
+  //     // await messaging().registerDeviceForRemoteMessages();
+  //     try {
+  //       console.log(await messaging().getToken());
+  //     } catch (err) {
+  //       console.log(err);
+  //     }
+  //     // Update backend (e.g. Firestore) with our token for the user
+  //     // const uid = firebase.auth().currentUser.uid;
+  //     // await firebase.firestore().doc(`users/${uid}`)
+  //     //   .update({
+  //     //     fcmTokens: firebase.firestore.FieldValues.arrayUnion(fcmToken),
+  //     //   });
+  //     //   }
+  //   };
+
+  useEffect(() => {
+    const unsubscribe = messaging().onMessage(async remoteMessage => {
+      Alert.alert('A new FCM message arrived!', JSON.stringify(remoteMessage));
+    });
+
+    return unsubscribe;
+  }, []);
 
   return (
     <ApplicationProvider {...eva} theme={{...eva.light, ...theme}}>

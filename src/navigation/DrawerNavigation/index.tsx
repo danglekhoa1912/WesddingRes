@@ -3,11 +3,22 @@ import Icon from 'react-native-vector-icons/MaterialIcons';
 import CustomDrawer from '../../components/CustomDrawer';
 import {useTheme} from '@ui-kitten/components';
 import HomePage from '../../screens/Home';
+import {getStorage} from '../../utils/storage';
+import {navigate} from '../../utils/navigate';
+import {useDispatch} from 'react-redux';
+import {AppDispatch} from '../../store';
+import {useEffect} from 'react';
+import {getUser} from '../../store/user/thunkApi';
 
 const Drawer = createDrawerNavigator();
 
 function DrawerScreen() {
   const theme = useTheme();
+  const dispatch = useDispatch<AppDispatch>();
+
+  useEffect(() => {
+    dispatch(getUser());
+  }, []);
 
   return (
     <Drawer.Navigator

@@ -8,12 +8,12 @@ import {
   TouchableWithoutFeedback,
   View,
 } from 'react-native';
-import React from 'react';
+import React, {useEffect, useMemo} from 'react';
 import {Button, Header, TextField} from '../../components';
 import {StyleService, useStyleSheet, useTheme} from '@ui-kitten/components';
 import * as yup from 'yup';
 import {useForm} from 'react-hook-form';
-import {IFormBooking} from '../../type/booking';
+import {IFormBooking, ISession} from '../../type/booking';
 import {yupResolver} from '@hookform/resolvers/yup';
 import DatePicker from '../../components/DatePicker';
 import {Field} from './components';
@@ -23,92 +23,145 @@ import Select from '../../components/Select';
 import {ScrollView} from 'react-native';
 import {useTranslation} from 'react-i18next';
 import {navigate, replace} from '../../utils/navigate';
-import {connect, useDispatch, useSelector} from 'react-redux';
+import {connect} from 'react-redux';
 import {AppDispatch, AppState} from '../../store';
-import {IBookingStore, updateInfoBooking} from '../../store/booking';
+import {updateInfoBooking} from '../../store/booking';
+import {getTypeParty, getTypeTime} from '../../store/booking/thunkApi';
+import {IILoobyBooked, ILobby, ITypeParty} from '../../type/lobby';
+import {sTypePartyOpts, sTypeTimeOpts} from '../../store/booking/selector';
+import {ISelectItem} from '../../type/common';
+import * as _ from 'lodash';
 
-const schema = yup.object({}).required();
+interface IBookingPage {
+  pTypePartyOpts: ISelectItem[];
+  pTypeTimeOpts: ISelectItem[];
+  pLobbyInOrder: ILobby;
+  pTimeLobbyBooked: IILoobyBooked[];
+  pGetTypeParty: () => Promise<unknown>;
+  pGetTypeTime: () => Promise<unknown>;
+  pUpdateInfoBooking: (data: any) => void;
+}
 
-interface IBookingPage {}
+const BookingPage = ({
+  pGetTypeParty,
+  pGetTypeTime,
+  pTimeLobbyBooked,
+  pLobbyInOrder,
+  pTypePartyOpts,
+  pTypeTimeOpts,
+  pUpdateInfoBooking,
+}: IBookingPage) => {
+  const schema = yup
+    .object({
+      time: yup
+        .object()
+        .test('checkEmpty', 'Vui lòng chọn loại tiệc', value => {
+          return !_.isEmpty(value);
+        }),
+      type_party: yup
+        .object()
+        .test('checkEmpty', 'Vui lòng chọn loại tiệc', value => {
+          return !_.isEmpty(value);
+        }),
+      quantityTable: yup
+        .number()
+        .required('Vui lòng nhập số lượng bàn')
+        .min(1, 'Vui lòng nhập số lượng bàn')
+        .max(pLobbyInOrder.capacity, 'Số lượng bàn vượt quá số lượng của sảnh'),
+    })
+    .required();
 
-const BookingPage = ({}: IBookingPage) => {
   const theme = useTheme();
   const styles = useStyleSheet(themedStyles);
   const {t} = useTranslation();
-  const dispatch = useDispatch<AppDispatch>();
-  const pBooking = useSelector<AppState>(state => state.booking);
-
-  const pUpdateInfoBooking = (data: IFormBooking) =>
-    dispatch(updateInfoBooking(data));
 
   const {
     control,
     handleSubmit,
     formState: {errors},
+    watch,
   } = useForm<IFormBooking>({
     defaultValues: {
-      bookingDate: new Date(),
-      dish: [],
-      payment: 0,
-      quantity: 0,
-      service: [],
-      session: {},
-      type: {},
+      date: new Date(),
+      quantityTable: 0,
+      time: {},
+      type_party: {},
     },
     resolver: yupResolver(schema),
   });
 
-  const SESSION = [
-    {
-      id: 1,
-      label: 'Sang',
-      value: 1,
-    },
-    {
-      id: 2,
-      label: 'Chieu',
-      value: 2,
-    },
-    {
-      id: 3,
-      label: 'Toi',
-      value: 3,
-    },
-  ];
+  const typeTimeOpts = useMemo(() => {
+    const dateSelected = pTimeLobbyBooked.find(
+      item =>
+        new Date(`${item.date} 00:00:00`).getTime() === watch('date').getTime(),
+    );
+    return pTypeTimeOpts.map(item => ({
+      ...item,
+      disabled: item.id === dateSelected?.session,
+    }));
+  }, [pTypeTimeOpts, watch('date')]);
 
   const handleChangeLobby = () => {
     replace('LobbyScreen');
   };
 
   const onSubmit = (data: IFormBooking) => {
-    // console.log(data);
     pUpdateInfoBooking(data);
     navigate('DishScreen');
   };
+
+  const filterDateBooked = (date: Date) => {
+    const timeBooked = pTimeLobbyBooked
+      .reduce((pre: any[], cur) => {
+        const date = pre.find(item => item?.date === cur.date);
+        if (date) {
+          date['count']++;
+          return pre;
+        }
+        return [
+          ...pre,
+          {
+            date: cur.date,
+            count: 1,
+          },
+        ];
+      }, [])
+      .filter(item => item.count === pTypeTimeOpts.length)
+      .map(item => item.date);
+    const time = date.getTime();
+    return !timeBooked.find(
+      item => new Date(`${item} 00:00:00`).getTime() === time,
+    );
+  };
+
+  useEffect(() => {
+    pGetTypeParty();
+    pGetTypeTime();
+  }, []);
 
   return (
     <ScrollView style={styles.root}>
       <TouchableWithoutFeedback onPress={Keyboard.dismiss}>
         <>
-          {/* <Header filter={false} title={t('screen.booking.title')} /> */}
+          <Header filter={false} title={t('screen.booking.title')} />
           <View style={styles.content}>
             <View style={styles.content_lobby}>
               <Image
                 source={{
-                  uri: 'https://scontent.fsgn8-3.fna.fbcdn.net/v/t39.30808-6/332214673_527005792921360_376904765818597641_n.jpg?_nc_cat=110&ccb=1-7&_nc_sid=5cd70e&_nc_ohc=rYclMefQayQAX8tP8M5&_nc_ht=scontent.fsgn8-3.fna&oh=00_AfAOG1cqfNYoFfZn1em_8bus4tsSgyRjRd8B2IXWxWTTTw&oe=641D18FA',
+                  uri: pLobbyInOrder?.image,
                 }}
                 style={styles.content_image as StyleProp<ImageStyle>}
               />
               <View style={styles.content_right}>
                 <View>
                   <Text style={styles.text}>
-                    {t('screen.lobby.name')}: Rose
+                    {t('screen.lobby.name')}: {pLobbyInOrder?.name}
                   </Text>
                   <Text style={styles.text}>
-                    {t('common.capacity')}: 12 bàn
+                    {t('common.capacity')}: {pLobbyInOrder?.capacity} bàn
                   </Text>
                   <Text style={styles.text}>
-                    {t('common.price')}: 100000 VND
+                    {t('common.price')}: {pLobbyInOrder?.price} VND
                   </Text>
                 </View>
                 <Button
@@ -122,17 +175,19 @@ const BookingPage = ({}: IBookingPage) => {
             <View style={styles.containerForm}>
               <Field label={t('screen.booking.booking_date')}>
                 <DatePicker
+                  min={new Date()}
+                  filter={filterDateBooked}
                   colorIcon="black"
                   controlStyle={styles.dataPicker}
                   control={control}
-                  name="bookingDate"
+                  name="date"
                 />
               </Field>
               <View
                 style={{
                   flexDirection: 'row',
                   justifyContent: 'space-between',
-                  alignItems: 'center',
+                  alignItems: 'flex-start',
                   width: '100%',
                 }}>
                 <Field
@@ -140,9 +195,9 @@ const BookingPage = ({}: IBookingPage) => {
                   label={t('screen.booking.session')}>
                   <Select
                     placeholder={t('screen.booking.placeholder_session') || ''}
-                    options={SESSION}
+                    options={typeTimeOpts}
                     control={control}
-                    name="session"
+                    name="time"
                   />
                 </Field>
                 <Field
@@ -152,9 +207,9 @@ const BookingPage = ({}: IBookingPage) => {
                     placeholder={
                       t('screen.booking.placeholder_type_party') || ''
                     }
-                    options={SESSION}
+                    options={pTypePartyOpts}
                     control={control}
-                    name="type"
+                    name="type_party"
                   />
                 </Field>
               </View>
@@ -164,7 +219,7 @@ const BookingPage = ({}: IBookingPage) => {
                   placeholder={t('screen.booking.placeholder_capacity') || ''}
                   style={styles.dataPicker}
                   control={control}
-                  name="quantity"
+                  name="quantityTable"
                   keyboardType="numeric"
                 />
               </Field>
@@ -181,24 +236,36 @@ const BookingPage = ({}: IBookingPage) => {
   );
 };
 
-export default BookingPage;
+const mapStateToProps = (state: AppState) => ({
+  pLobbyInOrder: state.booking.order.lobby,
+  pTypeTimeOpts: sTypeTimeOpts(state),
+  pTypePartyOpts: sTypePartyOpts(state),
+  pTimeLobbyBooked: state.lobby.weddingHallDetails,
+});
+
+const mapDispatchToProps = (dispatch: AppDispatch) => ({
+  pUpdateInfoBooking: (data: any) => dispatch(updateInfoBooking(data)),
+  pGetTypeTime: () => dispatch(getTypeTime()),
+  pGetTypeParty: () => dispatch(getTypeParty()),
+});
+
+export default connect(mapStateToProps, mapDispatchToProps)(BookingPage);
 
 const themedStyles = StyleService.create({
   root: {
     padding: 20,
-    flex: 1,
   },
   content: {
-    flex: 1,
     marginTop: 20,
+    paddingBottom: 50,
   },
   content_lobby: {
     flexDirection: 'row',
-    justifyContent: 'space-evenly',
+    justifyContent: 'space-between',
   },
   content_image: {
-    width: 180,
-    height: 180,
+    width: 160,
+    height: 160,
     borderRadius: 8,
   },
   content_right: {
@@ -215,15 +282,16 @@ const themedStyles = StyleService.create({
   button: {
     paddingVertical: 12,
     alignItems: 'center',
+    width: 160,
   },
   containerForm: {
-    marginTop: 20,
+    marginVertical: 20,
   },
   dataPicker: {
     backgroundColor: 'white',
     borderColor: 'black',
     borderRadius: 6,
-    paddingVertical: 16,
+    // paddingVertical: 16,
   },
   selectField: {
     width: '40%',

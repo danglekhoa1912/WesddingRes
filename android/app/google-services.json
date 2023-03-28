@@ -1,34 +1,33 @@
 {
   "project_info": {
-    "project_number": "542612926090",
-    "firebase_url": "https://quanlynhahang-3074c-default-rtdb.firebaseio.com",
-    "project_id": "quanlynhahang-3074c",
-    "storage_bucket": "quanlynhahang-3074c.appspot.com"
+    "project_number": "283621549036",
+    "project_id": "doan-8d7a4",
+    "storage_bucket": "doan-8d7a4.appspot.com"
   },
   "client": [
     {
       "client_info": {
-        "mobilesdk_app_id": "1:542612926090:android:1c22cba95494bf605c4773",
+        "mobilesdk_app_id": "1:283621549036:android:b6a3ace8095d0bc1ffd6c9",
         "android_client_info": {
           "package_name": "com.quan_ly_nha_hang"
         }
       },
       "oauth_client": [
         {
-          "client_id": "542612926090-9frlv79265veb0jdi410tknghgbs47nu.apps.googleusercontent.com",
+          "client_id": "283621549036-b2200etqfl1f5k9ioca5n7d7j58jjk8b.apps.googleusercontent.com",
           "client_type": 3
         }
       ],
       "api_key": [
         {
-          "current_key": "AIzaSyCOhYSWaGxiIF98PAe9PslK1lo-WzDRylg"
+          "current_key": "AIzaSyAv5WsfkCSoYaNiQtxn8np172tmvUeMVX8"
         }
       ],
       "services": {
         "appinvite_service": {
           "other_platform_oauth_client": [
             {
-              "client_id": "542612926090-9frlv79265veb0jdi410tknghgbs47nu.apps.googleusercontent.com",
+              "client_id": "283621549036-b2200etqfl1f5k9ioca5n7d7j58jjk8b.apps.googleusercontent.com",
               "client_type": 3
             }
           ]

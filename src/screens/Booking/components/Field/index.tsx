@@ -20,9 +20,12 @@ const Field = ({children, label, style}: IField) => {
 export default Field;
 
 const styles = StyleSheet.create({
-  root: {},
+  root: {
+    marginVertical: 8,
+  },
   label: {
     fontSize: 20,
     fontWeight: 'bold',
+    paddingBottom: 10,
   },
 });

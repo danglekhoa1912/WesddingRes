@@ -12,9 +12,9 @@ interface IRequestAxios extends AxiosRequestConfig {
   skipLoading?: boolean;
 }
 
-const onRequestConfig = (config: IRequestAxios) => {
+const onRequestConfig = async (config: IRequestAxios) => {
   if (!config.headers['Authorization']) {
-    const token = getStorage('accessToken');
+    const token = await getStorage('accessToken');
     if (token) {
       config.headers['Authorization'] = `Bearer ${token}`;
     }

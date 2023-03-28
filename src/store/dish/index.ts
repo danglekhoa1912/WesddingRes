@@ -1,10 +1,11 @@
 import {createSlice} from '@reduxjs/toolkit';
 import {ICategory, IDish} from '../../type/dish';
 import {reducer} from './reducer';
+import {extraReducers} from './thunkApi';
 
 export interface IDishStore {
   dish: IDish;
-  categories: ICategory;
+  categories: ICategory[];
 }
 
 const initialState = {
@@ -18,17 +19,14 @@ const initialState = {
     name: '',
     price: 0,
   },
-  categories: {
-    id: 0,
-    name: '',
-  },
+  categories: [],
 } as IDishStore;
 
 const dishSlice = createSlice({
   name: 'dish',
   initialState,
   reducers: reducer,
-  // extraReducers:''
+  extraReducers: extraReducers,
 });
 
 export const {} = dishSlice.actions;

@@ -1,8 +1,9 @@
 import {PayloadAction} from '@reduxjs/toolkit';
-import {IUserState} from '.';
+import {IUserStore} from '.';
+import {removeStorage} from '../../utils/storage';
 
 export const reducer = {
-  saveTokenFromStorage: (state: IUserState, action: PayloadAction<string>) => {
-    state.token = action.payload;
+  logout: (state: IUserStore, action: PayloadAction) => {
+    removeStorage('accessToken');
   },
 };

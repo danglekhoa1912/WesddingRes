@@ -1,13 +1,15 @@
 import {createSlice} from '@reduxjs/toolkit';
-import {ILobby} from '../../type/lobby';
+import {IILoobyBooked, ILobby} from '../../type/lobby';
 import {reducer} from './reducer';
+import {extraReducers} from './thunkApi';
 
 export interface ILobbyStore {
-  lobby: ILobby;
+  weddingHall: ILobby;
+  weddingHallDetails: IILoobyBooked[];
 }
 
 const initialState = {
-  lobby: {
+  weddingHall: {
     capacity: 0,
     describe: '',
     id: 0,
@@ -16,13 +18,14 @@ const initialState = {
     price: 0,
     status: '',
   },
+  weddingHallDetails: [],
 } as ILobbyStore;
 
 const lobbySlice = createSlice({
   name: 'lobby',
   initialState,
   reducers: reducer,
-  // extraReducers:''
+  extraReducers: extraReducers,
 });
 
 export const {} = lobbySlice.actions;

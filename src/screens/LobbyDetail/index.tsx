@@ -1,64 +1,83 @@
 import {Image, ImageBackground, StyleSheet, Text, View} from 'react-native';
-import React from 'react';
+import React, {useEffect, useState} from 'react';
 import {TouchableOpacity} from 'react-native';
 import {Button} from '../../components';
 import Icon from 'react-native-vector-icons/AntDesign';
 import {StyleService, useStyleSheet, useTheme} from '@ui-kitten/components';
-import {DetailProps} from '../../navigation/RootNavigate';
+import {DetailScreenRouteProp} from '../../navigation/RootNavigate';
 import {goBack, navigate} from '../../utils/navigate';
+import {useDispatch, useSelector} from 'react-redux';
+import {AppDispatch, AppState} from '../../store';
+import {getLobbyById} from '../../store/lobby/thunkApi';
+import {ILobby} from '../../type/lobby';
+import {updateInfoBooking} from '../../store/booking';
 
-const LobbyDetailPage = ({route}: DetailProps) => {
-  //   console.log(route);
+const LobbyDetailPage = ({route}: DetailScreenRouteProp) => {
   const styles = useStyleSheet(themedStyles);
   const theme = useTheme();
+  const pLobbyDetail = useSelector<AppState, ILobby>(
+    state => state.lobby.weddingHall,
+  );
+  const dispatch = useDispatch<AppDispatch>();
 
   const handleBooking = () => {
+    dispatch(
+      updateInfoBooking({
+        lobby: pLobbyDetail,
+      }),
+    );
     navigate('BookingScreen');
   };
 
+  useEffect(() => {
+    dispatch(getLobbyById(route.params.id));
+  }, [route.params.id]);
+
   return (
     <View style={styles.container}>
-      <ImageBackground
-        borderBottomLeftRadius={8}
-        borderBottomRightRadius={8}
-        source={{
-          uri: 'https://scontent.fsgn2-5.fna.fbcdn.net/v/t39.30808-6/334558732_1367481630733289_487941678723319369_n.jpg?_nc_cat=104&ccb=1-7&_nc_sid=5cd70e&_nc_ohc=Xiz8jRJTnQoAX-FBLoi&_nc_ht=scontent.fsgn2-5.fna&oh=00_AfBgQn5kVYRdRQRXNx_iK9P4Y8RLn5f8wvPLpCVn_Jfa0Q&oe=6407BAB3',
-        }}
-        style={styles.background_image}>
-        <TouchableOpacity onPress={() => {}} style={styles.button_back}>
-          <Icon
-            onPress={() => {
-              goBack();
+      {pLobbyDetail && (
+        <>
+          <ImageBackground
+            borderBottomLeftRadius={8}
+            borderBottomRightRadius={8}
+            source={{
+              uri: pLobbyDetail.image,
             }}
-            color={theme['color-primary-default']}
-            name="left"
-            size={30}
-          />
-        </TouchableOpacity>
-      </ImageBackground>
-      <View style={styles.container_content}>
-        <Text style={styles.title}>Rose</Text>
-        <Text style={styles.content}>
-          hihihihihihihihihihihihihihihihihihihihihihihihihihihihihihihihihihihihi
-        </Text>
-        <View style={styles.container_detail}>
-          <View>
-            <Text style={styles.content}>Price</Text>
-            <Text>10.000.000VND</Text>
+            style={styles.background_image}>
+            <TouchableOpacity onPress={() => {}} style={styles.button_back}>
+              <Icon
+                onPress={() => {
+                  goBack();
+                }}
+                color={theme['color-primary-default']}
+                name="left"
+                size={30}
+              />
+            </TouchableOpacity>
+          </ImageBackground>
+          <View style={styles.container_content}>
+            <Text style={styles.title}>{pLobbyDetail.name}</Text>
+            <Text style={styles.content}>{pLobbyDetail.describe}</Text>
+            <View style={styles.container_detail}>
+              <View>
+                <Text style={styles.content}>Price</Text>
+                <Text>{pLobbyDetail.price}VND</Text>
+              </View>
+              <View>
+                <Text style={styles.content}>Capacity</Text>
+                <Text>{pLobbyDetail.capacity} table</Text>
+              </View>
+            </View>
           </View>
-          <View>
-            <Text style={styles.content}>Capacity</Text>
-            <Text>20 table</Text>
+          <View style={styles.container_button}>
+            <Button
+              backgroundColor={theme['color-primary-default']}
+              title="Book Now"
+              onPress={handleBooking}
+            />
           </View>
-        </View>
-      </View>
-      <View style={styles.container_button}>
-        <Button
-          backgroundColor={theme['color-primary-default']}
-          title="Book Now"
-          onPress={handleBooking}
-        />
-      </View>
+        </>
+      )}
     </View>
   );
 };

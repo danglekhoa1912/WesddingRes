@@ -1,16 +1,15 @@
+import {ILobby} from './lobby';
 import {ISelectItem} from './common';
 
 export interface IFormBooking {
-  bookingDate: Date;
-  session: ISelectItem;
-  type: ISelectItem;
-  quantity: number;
-  dish: number[];
-  service: number[];
-  payment: number;
+  date: Date;
+  time: ISelectItem;
+  type_party: ISelectItem;
+  quantityTable: number;
 }
 
 export interface IBookingReq {
+  amount: number;
   idUser: number;
   whId: number;
   pwtId: number;
@@ -37,8 +36,7 @@ export enum CASH_TYPE {
 }
 
 export interface ITypePay {
-  id: CASH_TYPE;
-  icon: JSX.Element;
-  type: string;
+  id: number;
+  type: CASH_TYPE;
   name: string;
 }

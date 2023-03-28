@@ -1,3 +1,4 @@
+import {extraReducers} from './thunkApi';
 import {createSlice} from '@reduxjs/toolkit';
 import {IUser} from '../../type/user';
 import {reducer} from './reducer';
@@ -24,9 +25,9 @@ const userSlice = createSlice({
   name: 'user',
   initialState,
   reducers: reducer,
-  // extraReducers:''
+  extraReducers: extraReducers,
 });
 
-export const {} = userSlice.actions;
+export const {logout} = userSlice.actions;
 
 export default userSlice.reducer;

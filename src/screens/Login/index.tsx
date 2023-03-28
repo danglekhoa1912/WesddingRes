@@ -1,4 +1,10 @@
-import {StyleSheet, TouchableOpacity, View} from 'react-native';
+import {
+  Keyboard,
+  StyleSheet,
+  TouchableOpacity,
+  TouchableWithoutFeedback,
+  View,
+} from 'react-native';
 import React from 'react';
 import {COLORS} from '../../utils/color';
 import Icon from 'react-native-vector-icons/AntDesign';
@@ -6,11 +12,20 @@ import {Button, Text, TextField} from '../../components';
 import {useForm} from 'react-hook-form';
 import {IFormLogin} from '../../type/form';
 import {goBack, navigate} from '../../utils/navigate';
+import {AppDispatch} from '../../store';
+import {ILoginRes} from '../../type/user';
+import {loginUser} from '../../store/user/thunkApi';
+import {connect} from 'react-redux';
+import messaging from '@react-native-firebase/messaging';
 
-const LoginPage = () => {
+interface ILoginPage {
+  pLoginUser: (data: ILoginRes) => Promise<unknown>;
+}
+
+const LoginPage = ({pLoginUser}: ILoginPage) => {
   const {control, watch, handleSubmit} = useForm<IFormLogin>({
     defaultValues: {
-      email: '',
+      userName: '',
       password: '',
     },
   });
@@ -20,48 +35,66 @@ const LoginPage = () => {
   };
 
   const onSubmit = (data: IFormLogin) => {
-    // console.log(data);
-    navigate('DrawerScreen');
+    messaging()
+      .getToken()
+      .then(token => {
+        pLoginUser({
+          password: data.password,
+          username: data.userName,
+          tokenDevice: token,
+        });
+        navigate('DrawerScreen');
+      });
   };
 
   return (
-    <View style={styles.root}>
-      <View style={styles.header}>
-        <TouchableOpacity
-          onPress={() => {
-            goBack();
-          }}>
-          <Icon size={30} name="back" color={COLORS.tertiary} />
-        </TouchableOpacity>
-        <Text style={styles.title} category="h1">
-          Let's sign in you in.
-        </Text>
-        <Text>Welcome back.</Text>
-        <Text>You have been missed.</Text>
-      </View>
-      <View style={styles.input}>
-        <TextField control={control} name="email" placeholder="Email" />
-        <TextField
-          secureTextEntry
-          control={control}
-          name="password"
-          placeholder="Password"
-        />
-      </View>
-      <View>
-        <View style={styles.textFooter}>
-          <Text>Don't have a account?</Text>
-          <TouchableOpacity onPress={handleNavigateRegister}>
-            <Text category="h6">Register</Text>
+    <TouchableWithoutFeedback onPress={Keyboard.dismiss}>
+      <View style={styles.root}>
+        <View style={styles.header}>
+          <TouchableOpacity
+            onPress={() => {
+              goBack();
+            }}>
+            <Icon size={30} name="back" color={COLORS.tertiary} />
           </TouchableOpacity>
+          <Text style={styles.title} category="h1">
+            Let's sign in you in.
+          </Text>
+          <Text>Welcome back.</Text>
+          <Text>You have been missed.</Text>
         </View>
-        <Button onPress={handleSubmit(onSubmit)} title="Sign In" />
+        <View style={styles.input}>
+          <TextField
+            control={control}
+            name="userName"
+            placeholder="User Name"
+          />
+          <TextField
+            secureTextEntry
+            control={control}
+            name="password"
+            placeholder="Password"
+          />
+        </View>
+        <View>
+          <View style={styles.textFooter}>
+            <Text>Don't have a account?</Text>
+            <TouchableOpacity onPress={handleNavigateRegister}>
+              <Text category="h6">Register</Text>
+            </TouchableOpacity>
+          </View>
+          <Button onPress={handleSubmit(onSubmit)} title="Sign In" />
+        </View>
       </View>
-    </View>
+    </TouchableWithoutFeedback>
   );
 };
 
-export default LoginPage;
+const mapDispatchToProps = (dispatch: AppDispatch) => ({
+  pLoginUser: (data: ILoginRes) => dispatch(loginUser(data)),
+});
+
+export default connect(null, mapDispatchToProps)(LoginPage);
 
 const styles = StyleSheet.create({
   root: {

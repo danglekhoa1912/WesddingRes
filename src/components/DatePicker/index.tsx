@@ -58,7 +58,6 @@ export default DatePicker;
 
 const themedStyles = StyleService.create({
   root: {
-    marginVertical: 10,
     width: '100%',
   },
   field: {

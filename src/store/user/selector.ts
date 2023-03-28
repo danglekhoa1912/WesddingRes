@@ -1,5 +1,5 @@
 import {createSelector} from '@reduxjs/toolkit';
-import {AppState} from 'store';
+import {AppState} from '..';
 
 const getToken = (state: AppState) => state.user.token;
 

@@ -16,9 +16,17 @@ import Icon from 'react-native-vector-icons/Ionicons';
 
 import {MenuBg} from '../../assets/index';
 import {navigate} from '../../utils/navigate';
+import {useDispatch, useSelector} from 'react-redux';
+import {AppDispatch, AppState} from '../../store';
+import {logout} from '../../store/user';
+import {IUser} from '../../type/user';
 
 const CustomDrawer = (props: DrawerContentComponentProps) => {
-  const logOut = () => {
+  const dispatch = useDispatch<AppDispatch>();
+  const pProfile = useSelector<AppState, IUser>(state => state.user.user);
+
+  const handleLogout = () => {
+    dispatch(logout());
     navigate('LoginScreen');
   };
 
@@ -31,17 +39,17 @@ const CustomDrawer = (props: DrawerContentComponentProps) => {
           <Image
             style={styles.avatar}
             source={{
-              uri: 'https://haycafe.vn/wp-content/uploads/2022/02/Anh-gai-xinh-Viet-Nam.jpg',
+              uri: pProfile?.avatar,
             }}
           />
-          <Text style={styles.text}>Khoa</Text>
+          <Text style={styles.text}>{pProfile?.name}</Text>
         </ImageBackground>
         <View style={styles.container_list}>
           <DrawerItemList {...props} />
         </View>
       </DrawerContentScrollView>
       <View style={styles.container_bottom}>
-        <TouchableOpacity onPress={logOut} style={styles.button}>
+        <TouchableOpacity onPress={handleLogout} style={styles.button}>
           <View style={styles.content_button}>
             <Icon name="exit-outline" size={22} />
             <Text style={{fontSize: 15, marginLeft: 5}}>Đăng xuất</Text>

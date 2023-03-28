@@ -1,8 +1,7 @@
 import {StyleSheet, View} from 'react-native';
 import React from 'react';
 import {useSelector} from 'react-redux';
-import {Text} from '../../../../components';
-import {Divider} from '@ui-kitten/components';
+import {Divider, Text} from '@ui-kitten/components';
 
 interface ITotalPrice {
   lobbyPrice: number;
@@ -21,10 +20,10 @@ const TotalPrice = ({
   const totalLobby = (lobbyPrice + dishPrice) * tableQuantity;
   return (
     <View>
-      <Text>Thanh toán</Text>
+      <Text category="h5">Thanh toán</Text>
       <View style={styles.total}>
         <View style={styles.price}>
-          <Text>Tiền sảnh</Text>
+          <Text category="h6">Tiền sảnh</Text>
           <Text>{lobbyPrice} VND</Text>
         </View>
         <View style={styles.price}>
@@ -32,7 +31,7 @@ const TotalPrice = ({
           <Text>+</Text>
         </View>
         <View style={styles.price}>
-          <Text>Tiền món ăn</Text>
+          <Text category="h6">Tiền món ăn</Text>
           <Text>{dishPrice} VND</Text>
         </View>
         <View style={styles.price}>
@@ -40,7 +39,7 @@ const TotalPrice = ({
           <Text>x</Text>
         </View>
         <View style={styles.price}>
-          <Text>Số bàn</Text>
+          <Text category="h6">Số bàn</Text>
           <Text>{tableQuantity} bàn</Text>
         </View>
         <Divider />
@@ -49,12 +48,12 @@ const TotalPrice = ({
           <Text>{totalLobby} VND</Text>
         </View>
         <View style={styles.price}>
-          <Text>Tiền dịch vụ</Text>
+          <Text category="h6">Tiền dịch vụ</Text>
           <Text>{servicePrice} VND</Text>
         </View>
         <Divider />
         <View style={styles.price}>
-          <Text>Tổng tiền</Text>
+          <Text category="h6">Tổng tiền</Text>
           <Text>{totalLobby + servicePrice} VND</Text>
         </View>
       </View>

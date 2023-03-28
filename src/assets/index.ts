@@ -11,6 +11,9 @@ import Intro7 from './intro7.jpg';
 import Intro8 from './intro8.jpg';
 import Intro9 from './intro9.jpg';
 import Intro10 from './intro10.jpg';
+import MomoPay from './Momo.svg';
+import Cash from './Cash.svg';
+import ZaloPay from './zalopay.svg';
 
 export {
   Logo,
@@ -26,4 +29,7 @@ export {
   Intro8,
   Intro9,
   Intro10,
+  MomoPay,
+  Cash,
+  ZaloPay,
 };

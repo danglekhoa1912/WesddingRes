@@ -3,7 +3,7 @@ import {IServiceRequestParams, IServiceRes} from '../type/service';
 
 export const getListService = (params: IServiceRequestParams) => {
   const {page = 1, searchByName = ''} = params;
-  return AxiosClient.get(`order/service/getall`, {
+  return AxiosClient.get(`order/service/get-all`, {
     params: {
       page,
       searchByName,

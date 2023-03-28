@@ -1,5 +1,5 @@
 import {FlatList, StyleSheet, Text, TouchableOpacity, View} from 'react-native';
-import React, {useState} from 'react';
+import React, {useEffect, useRef, useState} from 'react';
 import {
   Input,
   StyleService,
@@ -11,156 +11,57 @@ import {Button, Header} from '../../components';
 import Icon from 'react-native-vector-icons/FontAwesome';
 import {DishItem, CategoryItem} from './components';
 import {useTranslation} from 'react-i18next';
-import {IDish} from '../../type/dish';
+import {ICategory, IDish, IRequestParams} from '../../type/dish';
 import {AppDispatch, AppState} from '../../store';
-import {addDishToMenu} from '../../store/booking';
 import {connect} from 'react-redux';
 import {sCountDishInMenu} from '../../store/booking/selector';
 import {navigate} from '../../utils/navigate';
+import {getCategories, getDishList} from '../../store/dish/thunkApi';
 
 interface IDishPage {
   pCountDishInMenu: number;
-  pAddDishToMenu: (dish: IDish) => void;
+  pGetDishList: (params: IRequestParams) => Promise<any>;
+  pGetCategories: () => Promise<any>;
+  pCategories: ICategory[];
 }
 
-const CATEGORY_LIST = [
-  {
-    id: 1,
-    title: 'Khai Vi',
-  },
-  {
-    id: 2,
-    title: 'Mon Chinh',
-  },
-  {
-    id: 3,
-    title: 'Trang Mieng',
-  },
-  {
-    id: 4,
-    title: 'Thuc Uong',
-  },
-];
-
-const DISH_LIST: IDish[] = [
-  {
-    id: 1,
-    image:
-      'https://scontent.fsgn8-3.fna.fbcdn.net/v/t39.30808-6/336265420_778671919931668_3513491535690242185_n.jpg?_nc_cat=100&ccb=1-7&_nc_sid=5cd70e&_nc_ohc=x8jRRkUvfWwAX-M5xp0&_nc_ht=scontent.fsgn8-3.fna&oh=00_AfANBQa4O-akPzWqbg54otyJG3YjLfdA5woYIHVDAecbkg&oe=641D5524',
-    price: 1000,
-    categoryId: {
-      id: 1,
-      name: 'Khai vi',
-    },
-    name: 'Com Chien',
-  },
-  {
-    id: 2,
-    name: 'Com Chien',
-    image:
-      'https://scontent.fsgn8-3.fna.fbcdn.net/v/t39.30808-6/336265420_778671919931668_3513491535690242185_n.jpg?_nc_cat=100&ccb=1-7&_nc_sid=5cd70e&_nc_ohc=x8jRRkUvfWwAX-M5xp0&_nc_ht=scontent.fsgn8-3.fna&oh=00_AfANBQa4O-akPzWqbg54otyJG3YjLfdA5woYIHVDAecbkg&oe=641D5524',
-    price: 1000,
-    categoryId: {
-      id: 1,
-      name: 'Khai vi',
-    },
-  },
-  {
-    id: 3,
-    name: 'Com Chien',
-    image:
-      'https://scontent.fsgn8-3.fna.fbcdn.net/v/t39.30808-6/336265420_778671919931668_3513491535690242185_n.jpg?_nc_cat=100&ccb=1-7&_nc_sid=5cd70e&_nc_ohc=x8jRRkUvfWwAX-M5xp0&_nc_ht=scontent.fsgn8-3.fna&oh=00_AfANBQa4O-akPzWqbg54otyJG3YjLfdA5woYIHVDAecbkg&oe=641D5524',
-    price: 1000,
-    categoryId: {
-      id: 1,
-      name: 'Khai vi',
-    },
-  },
-  {
-    id: 4,
-    name: 'Com Chien',
-    image:
-      'https://scontent.fsgn8-3.fna.fbcdn.net/v/t39.30808-6/336265420_778671919931668_3513491535690242185_n.jpg?_nc_cat=100&ccb=1-7&_nc_sid=5cd70e&_nc_ohc=x8jRRkUvfWwAX-M5xp0&_nc_ht=scontent.fsgn8-3.fna&oh=00_AfANBQa4O-akPzWqbg54otyJG3YjLfdA5woYIHVDAecbkg&oe=641D5524',
-    price: 1000,
-    categoryId: {
-      id: 1,
-      name: 'Khai vi',
-    },
-  },
-  {
-    id: 5,
-    name: 'Com Chien',
-    image:
-      'https://scontent.fsgn8-3.fna.fbcdn.net/v/t39.30808-6/336265420_778671919931668_3513491535690242185_n.jpg?_nc_cat=100&ccb=1-7&_nc_sid=5cd70e&_nc_ohc=x8jRRkUvfWwAX-M5xp0&_nc_ht=scontent.fsgn8-3.fna&oh=00_AfANBQa4O-akPzWqbg54otyJG3YjLfdA5woYIHVDAecbkg&oe=641D5524',
-    price: 1000,
-    categoryId: {
-      id: 2,
-      name: 'Trang Mieng',
-    },
-  },
-  {
-    id: 6,
-    name: 'Com Chien',
-    image:
-      'https://scontent.fsgn8-3.fna.fbcdn.net/v/t39.30808-6/336265420_778671919931668_3513491535690242185_n.jpg?_nc_cat=100&ccb=1-7&_nc_sid=5cd70e&_nc_ohc=x8jRRkUvfWwAX-M5xp0&_nc_ht=scontent.fsgn8-3.fna&oh=00_AfANBQa4O-akPzWqbg54otyJG3YjLfdA5woYIHVDAecbkg&oe=641D5524',
-    price: 1000,
-    categoryId: {
-      id: 2,
-      name: 'Trang Mieng',
-    },
-  },
-  {
-    id: 7,
-    name: 'Com Chien',
-    image:
-      'https://scontent.fsgn8-3.fna.fbcdn.net/v/t39.30808-6/336265420_778671919931668_3513491535690242185_n.jpg?_nc_cat=100&ccb=1-7&_nc_sid=5cd70e&_nc_ohc=x8jRRkUvfWwAX-M5xp0&_nc_ht=scontent.fsgn8-3.fna&oh=00_AfANBQa4O-akPzWqbg54otyJG3YjLfdA5woYIHVDAecbkg&oe=641D5524',
-    price: 1000,
-    categoryId: {
-      id: 2,
-      name: 'Trang Mieng',
-    },
-  },
-  {
-    id: 8,
-    name: 'Com Chien',
-    image:
-      'https://scontent.fsgn8-3.fna.fbcdn.net/v/t39.30808-6/336265420_778671919931668_3513491535690242185_n.jpg?_nc_cat=100&ccb=1-7&_nc_sid=5cd70e&_nc_ohc=x8jRRkUvfWwAX-M5xp0&_nc_ht=scontent.fsgn8-3.fna&oh=00_AfANBQa4O-akPzWqbg54otyJG3YjLfdA5woYIHVDAecbkg&oe=641D5524',
-    price: 1000,
-    categoryId: {
-      id: 2,
-      name: 'Trang Mieng',
-    },
-  },
-  {
-    id: 9,
-    name: 'Com Chien',
-    image:
-      'https://scontent.fsgn8-3.fna.fbcdn.net/v/t39.30808-6/336265420_778671919931668_3513491535690242185_n.jpg?_nc_cat=100&ccb=1-7&_nc_sid=5cd70e&_nc_ohc=x8jRRkUvfWwAX-M5xp0&_nc_ht=scontent.fsgn8-3.fna&oh=00_AfANBQa4O-akPzWqbg54otyJG3YjLfdA5woYIHVDAecbkg&oe=641D5524',
-    price: 1000,
-    categoryId: {
-      id: 2,
-      name: 'Trang Mieng',
-    },
-  },
-  {
-    id: 10,
-    name: 'Com Chien',
-    image:
-      'https://scontent.fsgn8-3.fna.fbcdn.net/v/t39.30808-6/336265420_778671919931668_3513491535690242185_n.jpg?_nc_cat=100&ccb=1-7&_nc_sid=5cd70e&_nc_ohc=x8jRRkUvfWwAX-M5xp0&_nc_ht=scontent.fsgn8-3.fna&oh=00_AfANBQa4O-akPzWqbg54otyJG3YjLfdA5woYIHVDAecbkg&oe=641D5524',
-    price: 1000,
-    categoryId: {
-      id: 2,
-      name: 'Trang Mieng',
-    },
-  },
-];
-
-const DishPage = ({pCountDishInMenu, pAddDishToMenu}: IDishPage) => {
+const DishPage = ({
+  pCountDishInMenu,
+  pGetDishList,
+  pGetCategories,
+  pCategories,
+}: IDishPage) => {
   const {t} = useTranslation();
   const styles = useStyleSheet(themedStyles);
   const [search, setSearch] = useState('');
   const theme = useTheme();
   const [categorySelected, setCategorySelected] = useState(1);
+  const [dishList, setDishList] = useState<IDish[]>([]);
+  const [page, setPage] = useState(0);
+  const isLatestsPage = useRef(false);
+
+  const fetchMoreDish = () => {
+    if (!isLatestsPage.current) {
+      setPage(page + 1);
+    }
+  };
+
+  useEffect(() => {
+    pGetDishList({
+      categoryId: categorySelected,
+      page: page + 1,
+      searchByName: search,
+    }).then(data => {
+      if (!page) {
+        setDishList(data?.payload?.record);
+      } else setDishList([...dishList, ...data?.payload?.record]);
+      isLatestsPage.current = page + 1 >= data?.payload?.totalPage;
+    });
+  }, [page, search, categorySelected]);
+
+  useEffect(() => {
+    pGetCategories();
+  }, []);
 
   return (
     <View style={styles.container}>
@@ -175,12 +76,15 @@ const DishPage = ({pCountDishInMenu, pAddDishToMenu}: IDishPage) => {
           horizontal
           showsHorizontalScrollIndicator={false}
           contentContainerStyle={styles.container_category}>
-          {CATEGORY_LIST.map(category => (
+          {pCategories.map(category => (
             <CategoryItem
               selected={categorySelected === category.id}
               key={category.id}
-              title={category.title}
-              onPress={() => setCategorySelected(category.id)}
+              title={category.name}
+              onPress={() => {
+                setCategorySelected(category.id);
+                setPage(0);
+              }}
             />
           ))}
         </ScrollView>
@@ -194,7 +98,9 @@ const DishPage = ({pCountDishInMenu, pAddDishToMenu}: IDishPage) => {
             flex: 1,
             justifyContent: 'space-between',
           }}
-          data={DISH_LIST}
+          onEndReached={fetchMoreDish}
+          onEndReachedThreshold={0.2}
+          data={dishList}
           numColumns={2}
           renderItem={({item}) => <DishItem dish={item} key={item.id} />}
           showsVerticalScrollIndicator={false}
@@ -222,10 +128,12 @@ const DishPage = ({pCountDishInMenu, pAddDishToMenu}: IDishPage) => {
 
 const mapStateToProps = (state: AppState) => ({
   pCountDishInMenu: sCountDishInMenu(state),
+  pCategories: state.dish.categories,
 });
 
 const mapDispatchToProps = (dispatch: AppDispatch) => ({
-  pAddDishToMenu: (dish: IDish) => dispatch(addDishToMenu(dish)),
+  pGetDishList: (params: IRequestParams) => dispatch(getDishList(params)),
+  pGetCategories: () => dispatch(getCategories()),
 });
 
 export default connect(mapStateToProps, mapDispatchToProps)(DishPage);

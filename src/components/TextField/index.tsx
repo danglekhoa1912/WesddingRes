@@ -81,7 +81,7 @@ const themedStyles = StyleService.create({
     fontSize: 18,
   },
   error: {
-    color: 'white',
+    color: 'red',
     paddingTop: 8,
     paddingLeft: 12,
   },

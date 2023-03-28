@@ -79,7 +79,7 @@ const ServiceItem = ({
 };
 
 const mapStateToProps = (state: AppState) => ({
-  pServiceListInMenu: state.booking.booking.service.serviceList,
+  pServiceListInMenu: state.booking.order.service.serviceList,
 });
 
 const mapDispatchToProps = (dispatch: AppDispatch) => ({

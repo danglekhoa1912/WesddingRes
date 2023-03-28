@@ -5,7 +5,7 @@ import {
   TouchableOpacity,
   View,
 } from 'react-native';
-import React, {useEffect, useMemo} from 'react';
+import React, {useEffect, useMemo, useState} from 'react';
 import {StyleService, useStyleSheet, useTheme} from '@ui-kitten/components';
 import Carousel from 'react-native-snap-carousel';
 import {CarouselCardItem, ItemList} from './components';
@@ -31,22 +31,27 @@ import {AppDispatch, AppState} from '../../store';
 import {getLobbyList} from '../../store/lobby/thunkApi';
 import {getListService} from '../../store/service/thunkApi';
 import {getDishList} from '../../store/dish/thunkApi';
-import {IServiceRequestParams} from '../../type/service';
-import {IRequestParams} from '../../type/dish';
+import {IService, IServiceRequestParams} from '../../type/service';
+import {IDish, IRequestParams} from '../../type/dish';
+import {ILobby} from '../../type/lobby';
 
-interface IHomePage {}
+interface IHomePage {
+  pGetLobbyList: (params: IServiceRequestParams) => Promise<any>;
+  pGetDishList: (params: IRequestParams) => Promise<any>;
+  pGetServiceList: (params: IServiceRequestParams) => Promise<any>;
+}
 
-const HomePage = ({}: IHomePage) => {
+const HomePage = ({
+  pGetDishList,
+  pGetLobbyList,
+  pGetServiceList,
+}: IHomePage) => {
   const styles = useStyleSheet(themedStyles);
   const theme = useTheme();
   const {t} = useTranslation();
-  const dispatch = useDispatch<AppDispatch>();
-
-  const pGetLobbyList = () => dispatch(getLobbyList());
-  const pGetDishList = (params: IRequestParams) =>
-    dispatch(getDishList(params));
-  const pGetServiceList = (params: IServiceRequestParams) =>
-    dispatch(getListService(params));
+  const [lobbyList, setLobbyList] = useState<ILobby[]>([]);
+  const [dishList, setDishList] = useState<IDish[]>([]);
+  const [serviceList, setServiceList] = useState<IService[]>([]);
 
   const carouselItems = [
     Intro1,
@@ -61,50 +66,15 @@ const HomePage = ({}: IHomePage) => {
     Intro10,
   ];
 
-  const lobbyList = useMemo(
-    () =>
-      Lobby_List.map(lobby => ({
-        id: lobby.id,
-        name: lobby.name,
-        price: lobby.price,
-        image: lobby.image,
-      })),
-    [],
-  );
-  const dishList = useMemo(
-    () =>
-      Dish_List.map(dish => ({
-        id: dish.id,
-        name: dish.name,
-        price: dish.price,
-        image: dish.image,
-      })),
-    [],
-  );
-  const serviceList = useMemo(
-    () =>
-      Service_List.map(service => ({
-        id: service.id,
-        name: service.name,
-        price: service.price,
-        image: service.image,
-      })),
-    [],
-  );
-
   useEffect(() => {
-    // (async()=>{
-    // 	const lobbyList=await pGetLobbyList()
-    // 	const dishList=await
-    // })()
-    pGetLobbyList().then(data => {
-      //   console.log(data);
+    pGetLobbyList({page: 1}).then(data => {
+      setLobbyList(data?.payload?.record);
     });
     pGetDishList({page: 1}).then(data => {
-      //   console.log(data);
+      setDishList(data?.payload?.record);
     });
     pGetServiceList({page: 1}).then(data => {
-      //   console.log(data);
+      setServiceList(data?.payload?.record);
     });
   }, []);
 
@@ -127,12 +97,14 @@ const HomePage = ({}: IHomePage) => {
           }}
         />
       </View>
-      <ItemList
-        navigateToDetail="LobbyDetailScreen"
-        navigateTo="LobbyScreen"
-        label={t('screen.lobby.title')}
-        list={lobbyList}
-      />
+      {!!lobbyList?.length && (
+        <ItemList
+          navigateToDetail="LobbyDetailScreen"
+          navigateTo="LobbyScreen"
+          label={t('screen.lobby.title')}
+          list={lobbyList}
+        />
+      )}
       <ItemList
         navigateTo="DishScreen"
         label={t('screen.dish.title')}
@@ -147,9 +119,15 @@ const HomePage = ({}: IHomePage) => {
   );
 };
 
-const mapDispatchToProps = (dispatch: AppDispatch) => ({});
+const mapDispatchToProps = (dispatch: AppDispatch) => ({
+  pGetLobbyList: (params: IServiceRequestParams) =>
+    dispatch(getLobbyList(params)),
+  pGetDishList: (params: IRequestParams) => dispatch(getDishList(params)),
+  pGetServiceList: (params: IServiceRequestParams) =>
+    dispatch(getListService(params)),
+});
 
-export default HomePage;
+export default connect(null, mapDispatchToProps)(HomePage);
 
 const themedStyles = StyleService.create({
   main: {

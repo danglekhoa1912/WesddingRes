@@ -26,10 +26,6 @@ export type DetailScreenRouteProp = NativeStackScreenProps<
   'LobbyDetailScreen'
 >;
 
-export type DetailProps = {
-  route: DetailScreenRouteProp;
-};
-
 const Stack = createNativeStackNavigator();
 
 const RootNavigate = () => {

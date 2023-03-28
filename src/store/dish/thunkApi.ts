@@ -1,13 +1,17 @@
 import {IDishStore} from './index';
-import {ActionReducerMapBuilder, createAsyncThunk} from '@reduxjs/toolkit';
+import {
+  ActionReducerMapBuilder,
+  createAsyncThunk,
+  PayloadAction,
+} from '@reduxjs/toolkit';
 import {DishApi} from '../../apis';
-import {IDishRes, IRequestParams} from '../../type/dish';
+import {ICategory, IDishRes, IRequestParams} from '../../type/dish';
 
 export const getDishList = createAsyncThunk(
   'dish/getDishList',
   async (params: IRequestParams) => {
     const result = await DishApi.getDishList(params);
-    return result;
+    return result.data;
   },
 );
 
@@ -15,7 +19,7 @@ export const getCategories = createAsyncThunk(
   'dish/getCategories',
   async () => {
     const result = await DishApi.getCategories();
-    return result;
+    return result.data;
   },
 );
 
@@ -53,4 +57,11 @@ export const countDish = createAsyncThunk(
 
 export const extraReducers = (
   builders: ActionReducerMapBuilder<IDishStore>,
-) => {};
+) => {
+  builders.addCase(
+    getCategories.fulfilled,
+    (state: IDishStore, action: PayloadAction<ICategory[]>) => {
+      state.categories = action.payload;
+    },
+  );
+};

@@ -10,6 +10,7 @@ export interface IUser {
 }
 
 export interface ILoginRes {
-  email: string;
+  username: string;
   password: string;
+  tokenDevice?: string;
 }

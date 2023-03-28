@@ -62,7 +62,7 @@ const DishItem = ({
 };
 
 const mapStateToProps = (state: AppState) => ({
-  pDishListInMenu: state.booking.booking.menu.dishList,
+  pDishListInMenu: state.booking.order.menu.dishList,
 });
 
 const mapDispatchToProps = (dispatch: AppDispatch) => ({

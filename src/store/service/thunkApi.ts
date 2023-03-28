@@ -12,7 +12,7 @@ export const getListService = createAsyncThunk(
   'service/getListService',
   async (params: IServiceRequestParams) => {
     const result = await ServiceApi.getListService(params);
-    return result;
+    return result.data;
   },
 );
 
@@ -20,7 +20,7 @@ export const addService = createAsyncThunk(
   'service/addService',
   async (service: IServiceRes) => {
     const result = await ServiceApi.addService(service);
-    return result;
+    return result.data;
   },
 );
 

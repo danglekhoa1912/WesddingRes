@@ -9,15 +9,23 @@ import {useDispatch} from 'react-redux';
 import {AppDispatch} from '../../store';
 import {useEffect} from 'react';
 import {getUser} from '../../store/user/thunkApi';
+import ProfilePage from '../../screens/Profile';
+import SettingLanguage from '../../screens/Settinglanguage';
+import OrderHistoryPage from '../../screens/OrderHistory';
+import {useTranslation} from 'react-i18next';
 
 const Drawer = createDrawerNavigator();
 
 function DrawerScreen() {
   const theme = useTheme();
   const dispatch = useDispatch<AppDispatch>();
+  const {t} = useTranslation();
 
   useEffect(() => {
-    dispatch(getUser());
+    getStorage('accessToken').then(data => {
+      if (!data) navigate('LoginScreen');
+      else dispatch(getUser());
+    });
   }, []);
 
   return (
@@ -27,17 +35,49 @@ function DrawerScreen() {
         title: '',
         drawerActiveBackgroundColor: theme['color-primary-default'],
         drawerActiveTintColor: theme['color-background'],
-        drawerStyle: {backgroundColor: theme['color-background']},
+        drawerStyle: {
+          backgroundColor: 'white',
+        },
       }}>
       <Drawer.Screen
         options={{
           drawerIcon: ({focused, color}) => (
             <Icon name="feedback" size={22} color={color} />
           ),
-          title: 'HomePage',
+          title: `${t('screen.home.title') || ''}`,
         }}
         name="HomeScreen"
         component={HomePage}
+      />
+      <Drawer.Screen
+        options={{
+          drawerIcon: ({focused, color}) => (
+            <Icon name="person" size={22} color={color} />
+          ),
+          title: `${t('screen.profile.title') || ''}`,
+        }}
+        name="ProfileScreen"
+        component={ProfilePage}
+      />
+      <Drawer.Screen
+        options={{
+          drawerIcon: ({focused, color}) => (
+            <Icon name="history" size={22} color={color} />
+          ),
+          title: `${t('screen.order_history.title') || ''}`,
+        }}
+        name="HistoryScreen"
+        component={OrderHistoryPage}
+      />
+      <Drawer.Screen
+        options={{
+          drawerIcon: ({focused, color}) => (
+            <Icon name="language" size={22} color={color} />
+          ),
+          title: `${t('screen.language.title') || ''}`,
+        }}
+        name="LanguageScreen"
+        component={SettingLanguage}
       />
     </Drawer.Navigator>
   );

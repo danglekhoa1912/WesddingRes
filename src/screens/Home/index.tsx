@@ -1,11 +1,5 @@
-import {
-  ScrollView,
-  StyleSheet,
-  Text,
-  TouchableOpacity,
-  View,
-} from 'react-native';
-import React, {useEffect, useMemo, useState} from 'react';
+import {ScrollView, View} from 'react-native';
+import React, {useEffect, useState} from 'react';
 import {StyleService, useStyleSheet, useTheme} from '@ui-kitten/components';
 import Carousel from 'react-native-snap-carousel';
 import {CarouselCardItem, ItemList} from './components';
@@ -23,22 +17,22 @@ import {
   Intro9,
 } from '../../assets';
 import {useTranslation} from 'react-i18next';
-import {Lobby_List} from '../../mock/lobby';
-import {Dish_List} from '../../mock/dish';
-import {Service_List} from '../../mock/service';
-import {connect, useDispatch} from 'react-redux';
+import {connect, useSelector} from 'react-redux';
 import {AppDispatch, AppState} from '../../store';
 import {getLobbyList} from '../../store/lobby/thunkApi';
 import {getListService} from '../../store/service/thunkApi';
 import {getDishList} from '../../store/dish/thunkApi';
-import {IService, IServiceRequestParams} from '../../type/service';
+import {IService} from '../../type/service';
 import {IDish, IRequestParams} from '../../type/dish';
 import {ILobby} from '../../type/lobby';
+import {Spinner} from '../../components';
+import Layout from '../../constants/Layout';
+import {ISearchParam} from '../../type/common';
 
 interface IHomePage {
-  pGetLobbyList: (params: IServiceRequestParams) => Promise<any>;
+  pGetLobbyList: (params: ISearchParam) => Promise<any>;
   pGetDishList: (params: IRequestParams) => Promise<any>;
-  pGetServiceList: (params: IServiceRequestParams) => Promise<any>;
+  pGetServiceList: (params: ISearchParam) => Promise<any>;
 }
 
 const HomePage = ({
@@ -52,6 +46,9 @@ const HomePage = ({
   const [lobbyList, setLobbyList] = useState<ILobby[]>([]);
   const [dishList, setDishList] = useState<IDish[]>([]);
   const [serviceList, setServiceList] = useState<IService[]>([]);
+  const pIsLoading = useSelector<AppState, number>(
+    state => state.global.isLoading,
+  );
 
   const carouselItems = [
     Intro1,
@@ -79,52 +76,61 @@ const HomePage = ({
   }, []);
 
   return (
-    <ScrollView contentContainerStyle={styles.main}>
-      <View>
-        <Carousel
-          layout="default"
-          layoutCardOffset={9}
-          data={carouselItems}
-          renderItem={CarouselCardItem}
-          sliderWidth={SLIDER_WIDTH}
-          itemWidth={ITEM_WIDTH}
-          inactiveSlideShift={1}
-          useScrollView={true}
-          loop
-          contentContainerCustomStyle={{
-            alignItems: 'center',
-            padding: 18,
-          }}
-        />
-      </View>
-      {!!lobbyList?.length && (
-        <ItemList
-          navigateToDetail="LobbyDetailScreen"
-          navigateTo="LobbyScreen"
-          label={t('screen.lobby.title')}
-          list={lobbyList}
-        />
-      )}
-      <ItemList
-        navigateTo="DishScreen"
-        label={t('screen.dish.title')}
-        list={dishList}
-      />
-      <ItemList
-        navigateTo="ServiceScreen"
-        label={t('screen.service.title')}
-        list={serviceList}
-      />
-    </ScrollView>
+    <>
+      <ScrollView
+        contentContainerStyle={[
+          styles.main,
+          {minHeight: Layout.window.height},
+        ]}>
+        <View>
+          <Carousel
+            layout="default"
+            layoutCardOffset={9}
+            data={carouselItems}
+            renderItem={CarouselCardItem}
+            sliderWidth={SLIDER_WIDTH}
+            itemWidth={ITEM_WIDTH}
+            inactiveSlideShift={1}
+            useScrollView={true}
+            loop
+            contentContainerCustomStyle={{
+              alignItems: 'center',
+              padding: 18,
+            }}
+          />
+        </View>
+        {!!lobbyList?.length && (
+          <ItemList
+            navigateToDetail="LobbyDetailScreen"
+            navigateTo="LobbyScreen"
+            label={t('screen.lobby.title')}
+            list={lobbyList}
+          />
+        )}
+        {!!dishList.length && (
+          <ItemList
+            navigateTo="DishScreen"
+            label={t('screen.dish.title')}
+            list={dishList}
+          />
+        )}
+        {!!serviceList.length && (
+          <ItemList
+            navigateTo="ServiceScreen"
+            label={t('screen.service.title')}
+            list={serviceList}
+          />
+        )}
+      </ScrollView>
+      <Spinner isLoading={!!pIsLoading} />
+    </>
   );
 };
 
 const mapDispatchToProps = (dispatch: AppDispatch) => ({
-  pGetLobbyList: (params: IServiceRequestParams) =>
-    dispatch(getLobbyList(params)),
+  pGetLobbyList: (params: ISearchParam) => dispatch(getLobbyList(params)),
   pGetDishList: (params: IRequestParams) => dispatch(getDishList(params)),
-  pGetServiceList: (params: IServiceRequestParams) =>
-    dispatch(getListService(params)),
+  pGetServiceList: (params: ISearchParam) => dispatch(getListService(params)),
 });
 
 export default connect(null, mapDispatchToProps)(HomePage);
@@ -132,15 +138,5 @@ export default connect(null, mapDispatchToProps)(HomePage);
 const themedStyles = StyleService.create({
   main: {
     backgroundColor: 'color-background',
-  },
-  container_title: {
-    flexDirection: 'row',
-    justifyContent: 'space-between',
-    paddingHorizontal: 20,
-    paddingVertical: 15,
-  },
-  title: {
-    fontSize: 16,
-    fontWeight: '700',
   },
 });

@@ -19,6 +19,7 @@ interface IHeader {
   placeholderSearch?: string;
   setSearch?: React.Dispatch<React.SetStateAction<string>>;
   filter?: boolean;
+  onGoBack?: () => void;
 }
 
 const Header = ({
@@ -27,6 +28,7 @@ const Header = ({
   placeholderSearch,
   filter = true,
   setSearch,
+  onGoBack,
 }: IHeader) => {
   const styles = useStyleSheet(themedStyles);
   const theme = useTheme();
@@ -55,6 +57,7 @@ const Header = ({
         <TouchableOpacity
           onPress={() => {
             goBack();
+            onGoBack?.();
           }}>
           <Icon
             name="arrow-back-ios"

@@ -1,5 +1,7 @@
+import {IDish} from './dish';
 import {ILobby} from './lobby';
 import {ISelectItem} from './common';
+import {IService} from './service';
 
 export interface IFormBooking {
   date: Date;
@@ -39,4 +41,24 @@ export interface ITypePay {
   id: number;
   type: CASH_TYPE;
   name: string;
+}
+
+export interface IOrderHistory {
+  id: number;
+  username: string;
+  hall: string;
+  time: number;
+  date: Date;
+  price: number;
+  typeParty: number;
+  paymentstt: boolean;
+  typePay: string;
+  countTable: number;
+  note?: string;
+  dishList: {
+    dishId: IDish;
+  }[];
+  serviceList: {
+    serviceId: IService;
+  }[];
 }

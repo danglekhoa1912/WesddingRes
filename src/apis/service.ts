@@ -1,7 +1,8 @@
+import {ISearchParam} from './../type/common';
 import AxiosClient from '.';
-import {IServiceRequestParams, IServiceRes} from '../type/service';
+import {IServiceRes} from '../type/service';
 
-export const getListService = (params: IServiceRequestParams) => {
+export const getListService = (params: ISearchParam) => {
   const {page = 1, searchByName = ''} = params;
   return AxiosClient.get(`order/service/get-all`, {
     params: {

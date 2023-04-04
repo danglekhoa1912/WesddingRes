@@ -14,6 +14,9 @@ import Intro10 from './intro10.jpg';
 import MomoPay from './Momo.svg';
 import Cash from './Cash.svg';
 import ZaloPay from './zalopay.svg';
+import Spinner from './loading.json';
+import VietNamFlag from './vietnam.png';
+import UKFlag from './united-kingdom.png';
 
 export {
   Logo,
@@ -32,4 +35,7 @@ export {
   MomoPay,
   Cash,
   ZaloPay,
+  Spinner,
+  VietNamFlag,
+  UKFlag,
 };

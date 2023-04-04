@@ -14,7 +14,7 @@ import {
   TotalPrice,
   TypePayment,
 } from './components';
-import {Button} from '../../components';
+import {Button, Spinner} from '../../components';
 import {AppDispatch, AppState} from '../../store';
 import {connect} from 'react-redux';
 import {ICategory} from '../../type/dish';
@@ -23,6 +23,7 @@ import {CASH_TYPE, IBookingReq, ISession, ITypePay} from '../../type/booking';
 import {ITypeParty} from '../../type/lobby';
 import {addOrder} from '../../store/booking/thunkApi';
 import {IUser} from '../../type/user';
+import {useTranslation} from 'react-i18next';
 
 interface IBookingDetailPage {
   pCategories: ICategory[];
@@ -30,6 +31,7 @@ interface IBookingDetailPage {
   pTypeTime: ISession[];
   pTypeParty: ITypeParty[];
   pUser: IUser;
+  pIsLoading: number;
   pAddOrder: (data: IBookingReq) => Promise<any>;
 }
 
@@ -58,9 +60,11 @@ const BookingDetailPage = ({
   pUser,
   pTypeTime,
   pAddOrder,
+  pIsLoading,
 }: IBookingDetailPage) => {
   const styles = useStyleSheet(themedStyles);
   const theme = useTheme();
+  const {t} = useTranslation();
 
   const order = pBooking.order;
   const typeTime = useMemo(() => {
@@ -71,7 +75,6 @@ const BookingDetailPage = ({
   }, [order]);
 
   const handlePayment = () => {
-    console.log(order);
     pAddOrder({
       orderDate: order.date,
       amount: 0,
@@ -94,13 +97,13 @@ const BookingDetailPage = ({
       <CardInfor />
       <CardInforLobby />
       <View style={styles.dish_list}>
-        <Text category="h5">Danh sách món ăn</Text>
+        <Text category="h5">{t('screen.booking_detail.dishes') || ''}</Text>
         {pCategories.map(item => (
           <DishListByCategory key={item.id} category={item} />
         ))}
       </View>
       <View style={styles.service_list}>
-        <Text category="h5">Danh sách dịch vụ</Text>
+        <Text category="h5">{t('screen.booking_detail.services') || ''}</Text>
         {order.service.serviceList.map((service, index) => (
           <Text
             key={service.id}
@@ -117,7 +120,9 @@ const BookingDetailPage = ({
         tableQuantity={order.quantityTable}
       />
       <View>
-        <Text category="h5">Phương thức thanh toán</Text>
+        <Text category="h5">
+          {t('screen.booking_detail.payment_method') || ''}
+        </Text>
         {TYPE_PAY.map(type => (
           <TypePayment
             selected={order.type_pay === type.type}
@@ -127,12 +132,13 @@ const BookingDetailPage = ({
         ))}
       </View>
       <Button
-        title="Thanh Toan"
+        title={t('screen.booking_detail.pay.title') || ''}
         backgroundColor={theme['color-primary-default']}
         style={styles.button}
         styleText={styles.button_text}
         onPress={handlePayment}
       />
+      <Spinner isLoading={!!pIsLoading} />
     </ScrollView>
   );
 };
@@ -143,6 +149,7 @@ const mapStateToProps = (state: AppState) => ({
   pTypeTime: state.booking.typeTime,
   pTypeParty: state.booking.typeParty,
   pUser: state.user.user,
+  pIsLoading: state.global.isLoading,
 });
 
 const mapDispatchToProps = (dispatch: AppDispatch) => ({
@@ -156,6 +163,7 @@ const themedStyles = StyleService.create({
     backgroundColor: 'color-background',
     paddingHorizontal: 12,
     paddingBottom: 20,
+    position: 'relative',
   },
 
   dish_list: {},

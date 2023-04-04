@@ -18,6 +18,7 @@ const initialState = {
     name: '',
     password: '',
     role: '',
+    avatar: '',
   },
 } as IUserStore;
 

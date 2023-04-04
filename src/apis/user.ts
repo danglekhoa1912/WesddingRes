@@ -1,4 +1,5 @@
 import AxiosClient from '.';
+import {ISearchParam} from '../type/common';
 import {ILoginRes, IUser} from '../type/user';
 
 export const register = (user: IUser) => {
@@ -16,6 +17,7 @@ export const register = (user: IUser) => {
     name: filename,
     type,
   });
+  formdata.append('token', '');
   return AxiosClient.post('auth/signup', formdata, {
     headers: {
       'Content-Type': 'multipart/form-data',
@@ -35,8 +37,22 @@ export const getUser = () => {
   return AxiosClient.get('auth/user/profile');
 };
 
-export const getOrderHistory = (userId: number) => {
-  return AxiosClient.get(`order/allorder?id=${userId}`);
+export const getOrderHistory = (param: ISearchParam) => {
+  const {page = 1, searchByName = ''} = param;
+  return AxiosClient.get(`order/get-all-order`, {
+    params: {
+      page,
+      searchByName,
+    },
+  });
+};
+
+export const getOrderHistoryById = (id: number) => {
+  return AxiosClient.get('order/get-order-by-id', {
+    params: {
+      id,
+    },
+  });
 };
 
 export const updateUser = (user: IUser) => {
@@ -44,7 +60,6 @@ export const updateUser = (user: IUser) => {
   let match = /\.(\w+)$/.exec(filename || '');
   let type = match ? `image/${match[1]}` : `image`;
   let formdata = new FormData();
-  formdata.append('id', user.id);
   formdata.append('name', user.name);
   formdata.append('birthday', new Date(user.birthday).toString());
   formdata.append('mobile', user.mobile);

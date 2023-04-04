@@ -71,11 +71,13 @@ const ItemList = ({list, label, navigateTo, navigateToDetail}: IItemList) => {
             );
           }
         })}
-        <TouchableOpacity
-          onPress={() => navigate(navigateTo)}
-          style={styles.container_icon}>
-          <Icon name="arrowright" size={24} color="white" />
-        </TouchableOpacity>
+        {!!list.length && (
+          <TouchableOpacity
+            onPress={() => navigate(navigateTo)}
+            style={styles.container_icon}>
+            <Icon name="arrowright" size={24} color="white" />
+          </TouchableOpacity>
+        )}
       </ScrollView>
     </View>
   );

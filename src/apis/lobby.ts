@@ -1,8 +1,8 @@
 import {ILobbyRes} from './../type/lobby';
 import AxiosClient from '.';
-import {IServiceRequestParams} from '../type/service';
+import {ISearchParam} from '../type/common';
 
-export const getLobbyList = (params: IServiceRequestParams) => {
+export const getLobbyList = (params: ISearchParam) => {
   return AxiosClient.get('order/weddinghall/get-all-wedding-hall', {
     params: params,
   });

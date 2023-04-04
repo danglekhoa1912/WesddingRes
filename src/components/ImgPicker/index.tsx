@@ -18,9 +18,10 @@ import {Control, Controller, FieldValues, Path} from 'react-hook-form';
 interface IImgPicker<T extends FieldValues> {
   control: Control<T>;
   name: string;
+  children?: React.ReactNode;
 }
 export default function ImgPicker<T extends FieldValues>(props: IImgPicker<T>) {
-  const {control, name} = props;
+  const {control, name, children} = props;
   const [isSelectImg, setSelectImg] = useState(false);
   const styles = useStyleSheet(themedStyles);
 
@@ -76,6 +77,7 @@ export default function ImgPicker<T extends FieldValues>(props: IImgPicker<T>) {
               source={value ? {uri: value} : DefaultAvatar}
             />
           </TouchableOpacity>
+          {children}
           <Modal
             onClose={handleCloseModal}
             title="Select Image"

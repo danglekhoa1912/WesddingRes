@@ -11,12 +11,12 @@ import {
 import React, {useEffect, useState} from 'react';
 import Icon from 'react-native-vector-icons/MaterialIcons';
 import {StyleService, useStyleSheet, useTheme} from '@ui-kitten/components';
-import {Button, Card, Header, TextField} from '../../components';
+import {Button, Card, Header, Spinner, TextField} from '../../components';
 import {useForm} from 'react-hook-form';
 import {useTranslation} from 'react-i18next';
 import {navigate} from '../../utils/navigate';
-import {useDispatch} from 'react-redux';
-import {AppDispatch} from '../../store';
+import {useDispatch, useSelector} from 'react-redux';
+import {AppDispatch, AppState} from '../../store';
 import {getLobbyList} from '../../store/lobby/thunkApi';
 import {ILobby} from '../../type/lobby';
 
@@ -26,6 +26,9 @@ const LobbyPage = () => {
   const {t} = useTranslation();
   const [lobbyList, setLoobyList] = useState<ILobby[]>([]);
   const dispatch = useDispatch<AppDispatch>();
+  const pIsLoading = useSelector<AppState, number>(
+    state => state.global.isLoading,
+  );
   const styles = useStyleSheet(themedStyles);
 
   const handleViewDetail = (id: number) => {
@@ -106,6 +109,7 @@ const LobbyPage = () => {
             />
           </View>
         )}
+        <Spinner isLoading={!!pIsLoading} />
       </View>
     </TouchableWithoutFeedback>
   );

@@ -6,7 +6,7 @@ import {
 } from '@reduxjs/toolkit';
 import {LobbyApi} from '../../apis';
 import {ILobbyRes} from '../../type/lobby';
-import {IServiceRequestParams} from '../../type/service';
+import {ISearchParam} from '../../type/common';
 
 export const getLobbyById = createAsyncThunk(
   'lobby/getLobbyById',
@@ -26,7 +26,7 @@ export const addLooby = createAsyncThunk(
 
 export const getLobbyList = createAsyncThunk(
   'lobby/getLobbyList',
-  async (params: IServiceRequestParams) => {
+  async (params: ISearchParam) => {
     const result = await LobbyApi.getLobbyList(params);
     return result.data;
   },

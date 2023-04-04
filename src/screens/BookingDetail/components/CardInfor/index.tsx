@@ -5,16 +5,23 @@ import {Text} from '@ui-kitten/components';
 import {useSelector} from 'react-redux';
 import {AppState} from '../../../../store';
 import {IUser} from '../../../../type/user';
+import {useTranslation} from 'react-i18next';
 
 const CardInfor = () => {
   const user = useSelector<AppState, IUser>(state => state.user.user);
-  console.log(user);
+  const {t} = useTranslation();
   return (
     <Card style={styles.container_infor_user}>
-      <Text category="h5">Thông tin cá nhân</Text>
-      <Text>Tên khách hàng: {user.name}</Text>
-      <Text>Email: {user.email}</Text>
-      <Text>Số điện thoại: {user.mobile}</Text>
+      <Text category="h5">{t('screen.booking_detail.info.title') || ''}</Text>
+      <Text>
+        {t('screen.booking_detail.info.name') || ''}: {user.name}
+      </Text>
+      <Text>
+        {t('screen.booking_detail.info.email') || ''}: {user.email}
+      </Text>
+      <Text>
+        {t('screen.booking_detail.info.mobile') || ''}: {user.mobile}
+      </Text>
     </Card>
   );
 };

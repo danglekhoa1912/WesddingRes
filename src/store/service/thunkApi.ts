@@ -5,12 +5,13 @@ import {
 } from '@reduxjs/toolkit';
 import {IServiceStore} from '.';
 import {ServiceApi} from '../../apis';
-import {IServiceRequestParams, IServiceRes} from '../../type/service';
+import {IServiceRes} from '../../type/service';
 import {saveStorage} from '../../utils/storage';
+import {ISearchParam} from '../../type/common';
 
 export const getListService = createAsyncThunk(
   'service/getListService',
-  async (params: IServiceRequestParams) => {
+  async (params: ISearchParam) => {
     const result = await ServiceApi.getListService(params);
     return result.data;
   },

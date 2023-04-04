@@ -155,6 +155,7 @@ dependencies {
     implementation("com.google.firebase:firebase-bom:31.2.0")
     implementation("androidx.swiperefreshlayout:swiperefreshlayout:1.0.0")
     implementation("com.google.firebase:firebase-analytics")
+    implementation files('libs/zpdk-release-v3.1.aar')
     debugImplementation("com.facebook.flipper:flipper:${FLIPPER_VERSION}")
     debugImplementation("com.facebook.flipper:flipper-network-plugin:${FLIPPER_VERSION}") {
         exclude group:'com.squareup.okhttp3', module:'okhttp'

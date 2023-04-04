@@ -11,10 +11,14 @@ import {Control, Controller, FieldValues, Path} from 'react-hook-form';
 import {TouchableWithoutFeedback} from '@ui-kitten/components/devsupport';
 import Icon from 'react-native-vector-icons/Entypo';
 import {View} from 'react-native';
+import {StyleProp} from 'react-native';
+import {ViewStyle} from 'react-native';
 interface ITextField<T extends FieldValues> {
   control: Control<T>;
   name: string;
   secureTextEntry?: boolean;
+  styleContainer?: StyleProp<ViewStyle>;
+  colorError?: string;
 }
 
 function TextField<T extends FieldValues>(props: ITextField<T> & InputProps) {
@@ -25,6 +29,8 @@ function TextField<T extends FieldValues>(props: ITextField<T> & InputProps) {
     textStyle,
     style,
     placeholderTextColor = 'white',
+    styleContainer,
+    colorError = 'red',
     ...otherProps
   } = props;
   const [isSecurity, setIsSecurity] = useState(secureTextEntry);
@@ -47,7 +53,7 @@ function TextField<T extends FieldValues>(props: ITextField<T> & InputProps) {
       name={name as Path<T>}
       render={({field: {value, onChange}, fieldState: {error}}) => {
         return (
-          <View style={styles.root}>
+          <View style={[styles.root, styleContainer]}>
             <Input
               placeholderTextColor={placeholderTextColor}
               textStyle={[styles.input, textStyle]}
@@ -58,7 +64,11 @@ function TextField<T extends FieldValues>(props: ITextField<T> & InputProps) {
               onChangeText={onChange}
               {...otherProps}
             />
-            {error && <Text style={styles.error}>{error?.message}</Text>}
+            {error && (
+              <Text style={[styles.error, {color: colorError}]}>
+                {error?.message}
+              </Text>
+            )}
           </View>
         );
       }}
@@ -81,7 +91,6 @@ const themedStyles = StyleService.create({
     fontSize: 18,
   },
   error: {
-    color: 'red',
     paddingTop: 8,
     paddingLeft: 12,
   },

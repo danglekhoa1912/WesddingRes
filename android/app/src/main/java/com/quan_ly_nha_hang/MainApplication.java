@@ -1,7 +1,10 @@
 package com.quan_ly_nha_hang;
+import android.app.Activity;
 import android.content.res.Configuration;
 import expo.modules.ApplicationLifecycleDispatcher;
 import expo.modules.ReactNativeHostWrapper;
+import vn.zalopay.sdk.Environment;
+import vn.zalopay.sdk.ZaloPaySDK;
 
 import android.app.Application;
 import com.facebook.react.PackageList;
@@ -11,6 +14,9 @@ import com.facebook.react.ReactPackage;
 import com.facebook.react.defaults.DefaultNewArchitectureEntryPoint;
 import com.facebook.react.defaults.DefaultReactNativeHost;
 import com.facebook.soloader.SoLoader;
+import com.quan_ly_nha_hang.Helper.AppInfo;
+import com.quan_ly_nha_hang.zpmodule.PayZaloBridge;
+
 import java.util.List;
 
 public class MainApplication extends Application implements ReactApplication {
@@ -28,6 +34,7 @@ public class MainApplication extends Application implements ReactApplication {
           List<ReactPackage> packages = new PackageList(this).getPackages();
           // Packages that cannot be autolinked yet can be added manually here, for example:
           // packages.add(new MyReactNativePackage());
+            packages.add(new PayZaloBridge());
           return packages;
         }
 
@@ -54,7 +61,7 @@ public class MainApplication extends Application implements ReactApplication {
 
   @Override
   public void onCreate() {
-    super.onCreate();
+      super.onCreate();
     SoLoader.init(this, /* native exopackage */ false);
     if (BuildConfig.IS_NEW_ARCHITECTURE_ENABLED) {
       // If you opted-in for the New Architecture, we load the native entry point for this app.
@@ -62,6 +69,7 @@ public class MainApplication extends Application implements ReactApplication {
     }
     ReactNativeFlipper.initializeFlipper(this, getReactNativeHost().getReactInstanceManager());
     ApplicationLifecycleDispatcher.onApplicationCreate(this);
+      ZaloPaySDK.init(AppInfo.APP_ID, Environment.SANDBOX);
   }
 
   @Override

@@ -3,10 +3,12 @@ import {globalReducer} from './reducer';
 
 export interface IGlobalStore {
   isLoading: number;
+  isBooking: boolean;
 }
 
 const initialState: IGlobalStore = {
   isLoading: 0,
+  isBooking: false,
 };
 
 const globalSlice = createSlice({
@@ -15,6 +17,7 @@ const globalSlice = createSlice({
   reducers: globalReducer,
 });
 
-export const {showSpinner, hideSpinner, clearSpinner} = globalSlice.actions;
+export const {showSpinner, hideSpinner, clearSpinner, setIsBooking} =
+  globalSlice.actions;
 
 export default globalSlice.reducer;

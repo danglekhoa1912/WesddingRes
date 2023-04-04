@@ -11,7 +11,6 @@ export const addOrder = createAsyncThunk(
   'booking/addOrderService',
   async (order: IBookingReq) => {
     const result = await BookingApi.addOrderService(order);
-    console.log(result);
     return result;
   },
 );

@@ -4,3 +4,8 @@ export interface ISelectItem {
   value: number;
   disabled?: boolean;
 }
+
+export interface ISearchParam {
+  page?: number;
+  searchByName?: string;
+}

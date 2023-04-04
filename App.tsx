@@ -23,45 +23,23 @@ import {NavigationContainer} from '@react-navigation/native';
 import {navigationRef} from './src/utils/navigate';
 import {Provider} from 'react-redux';
 import messaging, {firebase} from '@react-native-firebase/messaging';
+import Toast from 'react-native-toast-message';
+import {getStorage} from './src/utils/storage';
+import {useTranslation} from 'react-i18next';
+import SplashScreen from 'react-native-splash-screen';
+import {LogBox} from 'react-native';
+
+LogBox.ignoreLogs(['Require cycle:']);
 
 type SectionProps = PropsWithChildren<{
   title: string;
 }>;
 PermissionsAndroid.request(PermissionsAndroid.PERMISSIONS.POST_NOTIFICATIONS);
-export const stotreManagement = store;
-
-// function Section({children, title}: SectionProps): JSX.Element {
-//   const isDarkMode = useColorScheme() === 'dark';
-//   //   const t = useTranslate();
-//   //   console.log(t);
-//   console.log(process.env.REACT_APP_BASE_URL);
-
-//   return (
-//     <View style={styles.sectionContainer}>
-//       <Text
-//         style={[
-//           styles.sectionTitle,
-//           {
-//             color: isDarkMode ? Colors.white : Colors.black,
-//           },
-//         ]}>
-//         {title}
-//       </Text>
-//       <Text
-//         style={[
-//           styles.sectionDescription,
-//           {
-//             color: isDarkMode ? Colors.light : Colors.dark,
-//           },
-//         ]}>
-//         {children}
-//       </Text>
-//     </View>
-//   );
-// }
 
 function App(): JSX.Element {
   const isDarkMode = useColorScheme() === 'dark';
+  const {i18n} = useTranslation();
+
   //   const {t, i18n} = useTranslation();
   //   const [value, setValue] = useState();
 
@@ -95,7 +73,10 @@ function App(): JSX.Element {
     const unsubscribe = messaging().onMessage(async remoteMessage => {
       Alert.alert('A new FCM message arrived!', JSON.stringify(remoteMessage));
     });
-
+    getStorage('lang').then(data => {
+      if (data) i18n.changeLanguage(data);
+    });
+    SplashScreen.hide();
     return unsubscribe;
   }, []);
 
@@ -106,6 +87,7 @@ function App(): JSX.Element {
           <NavigationContainer ref={navigationRef}>
             <RootNavigate />
           </NavigationContainer>
+          <Toast />
         </SafeAreaView>
       </Provider>
     </ApplicationProvider>

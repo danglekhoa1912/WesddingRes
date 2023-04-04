@@ -8,7 +8,7 @@ import {
 import React from 'react';
 import {StyleService, useStyleSheet, useTheme} from '@ui-kitten/components';
 import Icon from 'react-native-vector-icons/AntDesign';
-import {Button, Text, TextField} from '../../components';
+import {Button, Spinner, Text, TextField} from '../../components';
 import {useForm} from 'react-hook-form';
 import {IFormRegister} from '../../type/form';
 import DatePicker from '../../components/DatePicker';
@@ -16,8 +16,11 @@ import ImgPicker from '../../components/ImgPicker';
 import * as yup from 'yup';
 import {yupResolver} from '@hookform/resolvers/yup';
 import moment from 'moment';
-import {goBack} from '../../utils/navigate';
+import {goBack, navigate} from '../../utils/navigate';
 import {COLORS} from '../../utils/color';
+import {useDispatch, useSelector} from 'react-redux';
+import {AppDispatch, AppState} from '../../store';
+import {registerUser} from '../../store/user/thunkApi';
 
 const schema = yup
   .object({
@@ -25,13 +28,17 @@ const schema = yup
       .string()
       .required('Please enter your email')
       .email('Email invalidate'),
-    password: yup.string().required('Please enter your password'),
-    //   .matches(
-    //     new RegExp(
-    //       '^(?=.*[A-Za-z])(?=.*d)(?=.*[@$!%*#?&])[A-Za-zd@$!%*#?&]{8,}$',
-    //     ),
-    //     'Must Contain 8 Characters, One Uppercase, One Lowercase, One Number and one special case Character',
-    //   ),
+    password: yup
+      .string()
+      .required('Please enter your password')
+      .min(8, 'Password must be at least 8 characters')
+      .matches(/[a-z]/, 'Password must contain at least one lowercase letter')
+      .matches(/[A-Z]/, 'Password must contain at least one uppercase letter')
+      .matches(/\d/, 'Password must contain at least one number')
+      .matches(
+        /[@#$%^&+=!]/,
+        'Password must contain at least one special character',
+      ),
     name: yup.string().required('Please enter your name'),
     birthday: yup
       .date()
@@ -46,6 +53,10 @@ const schema = yup
 const RegisterPage = () => {
   const theme = useTheme();
   const styles = useStyleSheet(themedStyles);
+  const dispatch = useDispatch<AppDispatch>();
+  const pIsLoading = useSelector<AppState, number>(
+    state => state.global.isLoading,
+  );
 
   const {
     control,
@@ -62,9 +73,11 @@ const RegisterPage = () => {
     },
     resolver: yupResolver(schema),
   });
-
   const onSubmit = (data: IFormRegister) => {
-    // console.log(data);
+    dispatch(registerUser(data)).then((data: any) => {
+      console.log(data);
+      if (!data?.error) navigate('LoginScreen');
+    });
   };
 
   return (
@@ -82,28 +95,44 @@ const RegisterPage = () => {
               Create Account.
             </Text>
           </View>
-          <View style={styles.input}>
-            <ImgPicker control={control} name="avatar" />
+          <View style={styles.container_input}>
+            <View>
+              <ImgPicker control={control} name="avatar" />
+              {errors?.avatar?.message && <Text>{errors.avatar.message}</Text>}
+            </View>
             <TextField
+              colorError="white"
+              styleContainer={styles.text_field}
               keyboardType="email-address"
               control={control}
               name="email"
               placeholder="Email"
             />
-            <TextField control={control} name="name" placeholder="Name" />
             <TextField
+              colorError="white"
+              styleContainer={styles.text_field}
+              control={control}
+              name="name"
+              placeholder="Name"
+            />
+            <TextField
+              colorError="white"
+              styleContainer={styles.text_field}
               keyboardType="numeric"
               control={control}
               name="mobile"
               placeholder="Mobile"
             />
             <DatePicker
+              styleContainer={styles.text_field}
               max={new Date()}
               min={new Date(0)}
               control={control}
               name="birthday"
             />
             <TextField
+              colorError="white"
+              styleContainer={styles.text_field}
               secureTextEntry
               control={control}
               name="password"
@@ -113,6 +142,7 @@ const RegisterPage = () => {
           <View>
             <Button onPress={handleSubmit(onSubmit)} title="Register" />
           </View>
+          <Spinner isLoading={!!pIsLoading} />
         </View>
       </TouchableWithoutFeedback>
     </ScrollView>
@@ -133,8 +163,12 @@ const themedStyles = StyleService.create({
   title: {
     marginVertical: 12,
   },
-  input: {
+  container_input: {
     justifyContent: 'space-around',
     alignItems: 'center',
+    paddingVertical: 12,
+  },
+  text_field: {
+    marginBottom: 18,
   },
 });

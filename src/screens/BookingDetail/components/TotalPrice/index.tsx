@@ -2,6 +2,7 @@ import {StyleSheet, View} from 'react-native';
 import React from 'react';
 import {useSelector} from 'react-redux';
 import {Divider, Text} from '@ui-kitten/components';
+import {useTranslation} from 'react-i18next';
 
 interface ITotalPrice {
   lobbyPrice: number;
@@ -17,13 +18,16 @@ const TotalPrice = ({
   tableQuantity,
 }: ITotalPrice) => {
   //    const booking = useSelector(bookingSelector);
+  const {t} = useTranslation();
   const totalLobby = (lobbyPrice + dishPrice) * tableQuantity;
   return (
     <View>
-      <Text category="h5">Thanh toán</Text>
+      <Text category="h5">{t('screen.booking_detail.pay.title') || ''}</Text>
       <View style={styles.total}>
         <View style={styles.price}>
-          <Text category="h6">Tiền sảnh</Text>
+          <Text category="h6">
+            {t('screen.booking_detail.pay.lobby') || ''}
+          </Text>
           <Text>{lobbyPrice} VND</Text>
         </View>
         <View style={styles.price}>
@@ -31,7 +35,7 @@ const TotalPrice = ({
           <Text>+</Text>
         </View>
         <View style={styles.price}>
-          <Text category="h6">Tiền món ăn</Text>
+          <Text category="h6">{t('screen.booking_detail.pay.dish') || ''}</Text>
           <Text>{dishPrice} VND</Text>
         </View>
         <View style={styles.price}>
@@ -39,8 +43,12 @@ const TotalPrice = ({
           <Text>x</Text>
         </View>
         <View style={styles.price}>
-          <Text category="h6">Số bàn</Text>
-          <Text>{tableQuantity} bàn</Text>
+          <Text category="h6">
+            {t('screen.booking_detail.pay.capacity') || ''}
+          </Text>
+          <Text>
+            {tableQuantity} {t('screen.booking_detail.pay.table') || ''}
+          </Text>
         </View>
         <Divider />
         <View style={styles.price}>
@@ -48,12 +56,16 @@ const TotalPrice = ({
           <Text>{totalLobby} VND</Text>
         </View>
         <View style={styles.price}>
-          <Text category="h6">Tiền dịch vụ</Text>
+          <Text category="h6">
+            {t('screen.booking_detail.pay.service') || ''}
+          </Text>
           <Text>{servicePrice} VND</Text>
         </View>
         <Divider />
         <View style={styles.price}>
-          <Text category="h6">Tổng tiền</Text>
+          <Text category="h6">
+            {t('screen.booking_detail.pay.total') || ''}
+          </Text>
           <Text>{totalLobby + servicePrice} VND</Text>
         </View>
       </View>

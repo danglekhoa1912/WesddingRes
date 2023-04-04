@@ -20,6 +20,7 @@ interface IDishItem {
   pDishListInMenu: IDish[];
   pRemoveDishToMenu: (dish: IDish) => void;
   pAddDishToMenu: (dish: IDish) => void;
+  disable?: boolean;
 }
 
 const DishItem = ({
@@ -27,6 +28,7 @@ const DishItem = ({
   pAddDishToMenu,
   pDishListInMenu,
   pRemoveDishToMenu,
+  disable = false,
 }: IDishItem) => {
   const styles = useStyleSheet(themedStyles);
 
@@ -45,7 +47,7 @@ const DishItem = ({
 
   return (
     <Card style={[styles.container, isChoose && styles.choose]}>
-      <TouchableOpacity onPress={handlePress}>
+      <TouchableOpacity disabled={disable} onPress={handlePress}>
         <Image
           style={styles.image as StyleProp<ImageStyle>}
           source={{

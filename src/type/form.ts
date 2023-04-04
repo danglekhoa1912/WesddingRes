@@ -11,3 +11,10 @@ export interface IFormRegister {
   mobile: string;
   avatar: string;
 }
+
+export interface IFormUpdateUser {
+  name: string;
+  birthday: Date;
+  mobile: string;
+  avatar: string;
+}

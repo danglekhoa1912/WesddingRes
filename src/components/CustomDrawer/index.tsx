@@ -20,13 +20,15 @@ import {useDispatch, useSelector} from 'react-redux';
 import {AppDispatch, AppState} from '../../store';
 import {logout} from '../../store/user';
 import {IUser} from '../../type/user';
+import {useTranslation} from 'react-i18next';
 
 const CustomDrawer = (props: DrawerContentComponentProps) => {
+  const {t} = useTranslation();
   const dispatch = useDispatch<AppDispatch>();
   const pProfile = useSelector<AppState, IUser>(state => state.user.user);
-
   const handleLogout = () => {
     dispatch(logout());
+    props.navigation.closeDrawer();
     navigate('LoginScreen');
   };
 
@@ -52,7 +54,9 @@ const CustomDrawer = (props: DrawerContentComponentProps) => {
         <TouchableOpacity onPress={handleLogout} style={styles.button}>
           <View style={styles.content_button}>
             <Icon name="exit-outline" size={22} />
-            <Text style={{fontSize: 15, marginLeft: 5}}>Đăng xuất</Text>
+            <Text style={{fontSize: 15, marginLeft: 5}}>
+              {t('form.logout')}
+            </Text>
           </View>
         </TouchableOpacity>
       </View>

@@ -1,3 +1,4 @@
+import {PayloadAction} from '@reduxjs/toolkit';
 import {IGlobalStore} from '.';
 
 export const globalReducer = {
@@ -9,5 +10,8 @@ export const globalReducer = {
   },
   clearSpinner: (state: IGlobalStore) => {
     state.isLoading = 0;
+  },
+  setIsBooking: (state: IGlobalStore, action: PayloadAction<boolean>) => {
+    state.isBooking = action.payload;
   },
 };

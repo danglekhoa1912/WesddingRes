@@ -7,7 +7,7 @@ import {
   useTheme,
 } from '@ui-kitten/components';
 import {ScrollView} from 'react-native';
-import {Button, Header} from '../../components';
+import {Button, Header, Spinner} from '../../components';
 import Icon from 'react-native-vector-icons/FontAwesome';
 import {DishItem, CategoryItem} from './components';
 import {useTranslation} from 'react-i18next';
@@ -23,6 +23,8 @@ interface IDishPage {
   pGetDishList: (params: IRequestParams) => Promise<any>;
   pGetCategories: () => Promise<any>;
   pCategories: ICategory[];
+  pIsBooking: boolean;
+  pIsLoading: number;
 }
 
 const DishPage = ({
@@ -30,6 +32,8 @@ const DishPage = ({
   pGetDishList,
   pGetCategories,
   pCategories,
+  pIsBooking,
+  pIsLoading,
 }: IDishPage) => {
   const {t} = useTranslation();
   const styles = useStyleSheet(themedStyles);
@@ -62,7 +66,6 @@ const DishPage = ({
   useEffect(() => {
     pGetCategories();
   }, []);
-
   return (
     <View style={styles.container}>
       <Header
@@ -102,26 +105,33 @@ const DishPage = ({
           onEndReachedThreshold={0.2}
           data={dishList}
           numColumns={2}
-          renderItem={({item}) => <DishItem dish={item} key={item.id} />}
+          renderItem={({item}) => (
+            <DishItem disable={!pIsBooking} dish={item} key={item.id} />
+          )}
           showsVerticalScrollIndicator={false}
         />
       </View>
-      <TouchableOpacity style={styles.icon_menu}>
-        <Text style={styles.count}>{pCountDishInMenu}</Text>
-        <Icon
-          name="list-alt"
-          size={24}
-          color={theme['color-primary-default']}
-        />
-      </TouchableOpacity>
-      <Button
-        backgroundColor={theme['color-primary-default']}
-        style={styles.button_next}
-        title={t('common.next')}
-        onPress={() => {
-          navigate('ServiceScreen');
-        }}
-      />
+      {pIsBooking && (
+        <>
+          <TouchableOpacity style={styles.icon_menu}>
+            <Text style={styles.count}>{pCountDishInMenu}</Text>
+            <Icon
+              name="list-alt"
+              size={24}
+              color={theme['color-primary-default']}
+            />
+          </TouchableOpacity>
+          <Button
+            backgroundColor={theme['color-primary-default']}
+            style={styles.button_next}
+            title={t('common.next')}
+            onPress={() => {
+              navigate('ServiceScreen');
+            }}
+          />
+        </>
+      )}
+      <Spinner isLoading={!!pIsLoading} />
     </View>
   );
 };
@@ -129,6 +139,8 @@ const DishPage = ({
 const mapStateToProps = (state: AppState) => ({
   pCountDishInMenu: sCountDishInMenu(state),
   pCategories: state.dish.categories,
+  pIsBooking: state.global.isBooking,
+  pIsLoading: state.global.isLoading,
 });
 
 const mapDispatchToProps = (dispatch: AppDispatch) => ({

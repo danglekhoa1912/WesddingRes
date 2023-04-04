@@ -1,22 +1,28 @@
 import {Image, ImageBackground, StyleSheet, Text, View} from 'react-native';
 import React, {useEffect, useState} from 'react';
 import {TouchableOpacity} from 'react-native';
-import {Button} from '../../components';
+import {Button, Spinner} from '../../components';
 import Icon from 'react-native-vector-icons/AntDesign';
 import {StyleService, useStyleSheet, useTheme} from '@ui-kitten/components';
-import {DetailScreenRouteProp} from '../../navigation/RootNavigate';
+import {LobbyDetailScreenRouteProp} from '../../navigation/RootNavigate';
 import {goBack, navigate} from '../../utils/navigate';
 import {useDispatch, useSelector} from 'react-redux';
 import {AppDispatch, AppState} from '../../store';
 import {getLobbyById} from '../../store/lobby/thunkApi';
 import {ILobby} from '../../type/lobby';
 import {updateInfoBooking} from '../../store/booking';
+import {setIsBooking} from '../../store/global';
+import {useTranslation} from 'react-i18next';
 
-const LobbyDetailPage = ({route}: DetailScreenRouteProp) => {
+const LobbyDetailPage = ({route}: LobbyDetailScreenRouteProp) => {
+  const {t} = useTranslation();
   const styles = useStyleSheet(themedStyles);
   const theme = useTheme();
   const pLobbyDetail = useSelector<AppState, ILobby>(
     state => state.lobby.weddingHall,
+  );
+  const pIsLoading = useSelector<AppState, number>(
+    state => state.global.isLoading,
   );
   const dispatch = useDispatch<AppDispatch>();
 
@@ -26,6 +32,7 @@ const LobbyDetailPage = ({route}: DetailScreenRouteProp) => {
         lobby: pLobbyDetail,
       }),
     );
+    dispatch(setIsBooking(true));
     navigate('BookingScreen');
   };
 
@@ -60,24 +67,27 @@ const LobbyDetailPage = ({route}: DetailScreenRouteProp) => {
             <Text style={styles.content}>{pLobbyDetail.describe}</Text>
             <View style={styles.container_detail}>
               <View>
-                <Text style={styles.content}>Price</Text>
+                <Text style={styles.content}>{t('common.price')}</Text>
                 <Text>{pLobbyDetail.price}VND</Text>
               </View>
               <View>
-                <Text style={styles.content}>Capacity</Text>
-                <Text>{pLobbyDetail.capacity} table</Text>
+                <Text style={styles.content}>{t('common.capacity')}</Text>
+                <Text>
+                  {pLobbyDetail.capacity} {t('common.tables')}
+                </Text>
               </View>
             </View>
           </View>
           <View style={styles.container_button}>
             <Button
               backgroundColor={theme['color-primary-default']}
-              title="Book Now"
+              title={t('screen.booking.book_now')}
               onPress={handleBooking}
             />
           </View>
         </>
       )}
+      <Spinner isLoading={!!pIsLoading} />
     </View>
   );
 };

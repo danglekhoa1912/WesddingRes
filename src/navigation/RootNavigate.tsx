@@ -14,16 +14,25 @@ import LobbyPage from '../screens/Lobby';
 import LobbyDetailPage from '../screens/LobbyDetail';
 import ServicePage from '../screens/Service';
 import BookingDetailPage from '../screens/BookingDetail';
+import OrderHistoryDetailPage from '../screens/OrderHistoryDetail';
 
 type RootStackParamList = {
   LobbyDetailScreen: {
     id: number;
   };
+  OrderHistoryDetailScreen: {
+    id: number;
+  };
 };
 
-export type DetailScreenRouteProp = NativeStackScreenProps<
+export type LobbyDetailScreenRouteProp = NativeStackScreenProps<
   RootStackParamList,
   'LobbyDetailScreen'
+>;
+
+export type OrderHistoryDetailScreenRouteProp = NativeStackScreenProps<
+  RootStackParamList,
+  'OrderHistoryDetailScreen'
 >;
 
 const Stack = createNativeStackNavigator();
@@ -46,6 +55,10 @@ const RootNavigate = () => {
       <Stack.Screen name="LobbyDetailScreen" component={LobbyDetailPage} />
       <Stack.Screen name="ServiceScreen" component={ServicePage} />
       <Stack.Screen name="BookingDetailScreen" component={BookingDetailPage} />
+      <Stack.Screen
+        name="OrderHistoryDetailScreen"
+        component={OrderHistoryDetailPage}
+      />
       {/* {privateScreen?.map((screen, index) => (
         <Stack.Screen
           key={index}

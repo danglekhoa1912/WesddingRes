@@ -7,13 +7,15 @@ import {
   useStyleSheet,
 } from '@ui-kitten/components';
 import Icon from 'react-native-vector-icons/Entypo';
-import {Text} from 'react-native';
+import {StyleProp, Text} from 'react-native';
 import {View} from 'react-native';
+import {ViewStyle} from 'react-native';
 
 interface IDatePicker<T extends FieldValues> {
   control: Control<T>;
   name: string;
   colorIcon?: string;
+  styleContainer?: StyleProp<ViewStyle>;
 }
 
 function DatePicker<T extends FieldValues>(
@@ -25,6 +27,7 @@ function DatePicker<T extends FieldValues>(
     name,
     style,
     controlStyle,
+    styleContainer,
     ...otherProps
   } = props;
   const styles = useStyleSheet(themedStyles);
@@ -33,7 +36,7 @@ function DatePicker<T extends FieldValues>(
       control={control}
       name={name as Path<T>}
       render={({field: {value, onChange}, fieldState: {error}}) => (
-        <View style={styles.root}>
+        <View style={[styles.root, styleContainer]}>
           <Datepicker
             style={[{width: '100%'}, style]}
             controlStyle={[styles.field, controlStyle]}

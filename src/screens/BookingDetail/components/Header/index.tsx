@@ -3,8 +3,10 @@ import React from 'react';
 import {MaterialIcons} from '@expo/vector-icons';
 import {goBack} from '../../../../utils/navigate';
 import {useTheme} from '@ui-kitten/components';
+import {useTranslation} from 'react-i18next';
 
 const Header = () => {
+  const {t} = useTranslation();
   const theme = useTheme();
   return (
     <View style={styles.container}>
@@ -15,7 +17,7 @@ const Header = () => {
           color={theme['color-primary-default']}
         />
       </TouchableOpacity>
-      <Text style={styles.title}>Thông tin hóa đơn</Text>
+      <Text style={styles.title}>{t('screen.booking_detail.title')}</Text>
     </View>
   );
 };

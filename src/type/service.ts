@@ -6,11 +6,6 @@ export interface IService {
   image: string;
 }
 
-export interface IServiceRequestParams {
-  page?: number;
-  searchByName?: string;
-}
-
 export interface IServiceRes {
   id?: number;
   name: string;

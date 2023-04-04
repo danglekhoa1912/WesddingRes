@@ -8,27 +8,43 @@ import {
 import React from 'react';
 import {COLORS} from '../../utils/color';
 import Icon from 'react-native-vector-icons/AntDesign';
-import {Button, Text, TextField} from '../../components';
+import {Button, Spinner, Text, TextField} from '../../components';
 import {useForm} from 'react-hook-form';
 import {IFormLogin} from '../../type/form';
 import {goBack, navigate} from '../../utils/navigate';
-import {AppDispatch} from '../../store';
+import {AppDispatch, AppState} from '../../store';
 import {ILoginRes} from '../../type/user';
 import {loginUser} from '../../store/user/thunkApi';
-import {connect} from 'react-redux';
+import {connect, useSelector} from 'react-redux';
 import messaging from '@react-native-firebase/messaging';
+import * as yup from 'yup';
+import {yupResolver} from '@hookform/resolvers/yup';
+import {useTranslation} from 'react-i18next';
 
 interface ILoginPage {
-  pLoginUser: (data: ILoginRes) => Promise<unknown>;
+  pLoginUser: (data: ILoginRes) => Promise<any>;
 }
 
 const LoginPage = ({pLoginUser}: ILoginPage) => {
-  const {control, watch, handleSubmit} = useForm<IFormLogin>({
+  const {t} = useTranslation();
+
+  const schema = yup
+    .object({
+      userName: yup.string().required(t('validate.user_name.empty') || ''),
+      password: yup.string().required(t('validate.password.empty') || ''),
+    })
+    .required();
+
+  const {control, reset, handleSubmit} = useForm<IFormLogin>({
     defaultValues: {
       userName: '',
       password: '',
     },
+    resolver: yupResolver(schema),
   });
+  const pIsLoading = useSelector<AppState, number>(
+    state => state.global.isLoading,
+  );
 
   const handleNavigateRegister = () => {
     navigate('RegisterScreen');
@@ -42,8 +58,12 @@ const LoginPage = ({pLoginUser}: ILoginPage) => {
           password: data.password,
           username: data.userName,
           tokenDevice: token,
+        }).then(data => {
+          if (!data?.error) {
+            reset();
+            navigate('DrawerScreen');
+          }
         });
-        navigate('DrawerScreen');
       });
   };
 
@@ -65,26 +85,32 @@ const LoginPage = ({pLoginUser}: ILoginPage) => {
         </View>
         <View style={styles.input}>
           <TextField
+            colorError="white"
             control={control}
             name="userName"
-            placeholder="User Name"
+            placeholder={t('form.user_name') || ''}
           />
           <TextField
+            colorError="white"
             secureTextEntry
             control={control}
             name="password"
-            placeholder="Password"
+            placeholder={t('form.password') || ''}
           />
         </View>
         <View>
           <View style={styles.textFooter}>
-            <Text>Don't have a account?</Text>
+            <Text>{t(`form.don't_have_account`) || ''}</Text>
             <TouchableOpacity onPress={handleNavigateRegister}>
-              <Text category="h6">Register</Text>
+              <Text category="h6">{t('form.register') || ''}</Text>
             </TouchableOpacity>
           </View>
-          <Button onPress={handleSubmit(onSubmit)} title="Sign In" />
+          <Button
+            onPress={handleSubmit(onSubmit)}
+            title={t('form.logIn') || ''}
+          />
         </View>
+        <Spinner isLoading={!!pIsLoading} />
       </View>
     </TouchableWithoutFeedback>
   );

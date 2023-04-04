@@ -9,7 +9,7 @@ import {
   View,
 } from 'react-native';
 import React, {useEffect, useMemo} from 'react';
-import {Button, Header, TextField} from '../../components';
+import {Button, Header, Spinner, TextField} from '../../components';
 import {StyleService, useStyleSheet, useTheme} from '@ui-kitten/components';
 import * as yup from 'yup';
 import {useForm} from 'react-hook-form';
@@ -31,15 +31,18 @@ import {IILoobyBooked, ILobby, ITypeParty} from '../../type/lobby';
 import {sTypePartyOpts, sTypeTimeOpts} from '../../store/booking/selector';
 import {ISelectItem} from '../../type/common';
 import * as _ from 'lodash';
+import {setIsBooking} from '../../store/global';
 
 interface IBookingPage {
   pTypePartyOpts: ISelectItem[];
   pTypeTimeOpts: ISelectItem[];
   pLobbyInOrder: ILobby;
   pTimeLobbyBooked: IILoobyBooked[];
+  pIsLoading: number;
   pGetTypeParty: () => Promise<unknown>;
   pGetTypeTime: () => Promise<unknown>;
   pUpdateInfoBooking: (data: any) => void;
+  pSetIsBooking: (data: boolean) => void;
 }
 
 const BookingPage = ({
@@ -49,31 +52,36 @@ const BookingPage = ({
   pLobbyInOrder,
   pTypePartyOpts,
   pTypeTimeOpts,
+  pIsLoading,
   pUpdateInfoBooking,
+  pSetIsBooking,
 }: IBookingPage) => {
+  const {t} = useTranslation();
   const schema = yup
     .object({
       time: yup
         .object()
-        .test('checkEmpty', 'Vui lòng chọn loại tiệc', value => {
+        .test('checkEmpty', t('validate.session') || '', value => {
           return !_.isEmpty(value);
         }),
       type_party: yup
         .object()
-        .test('checkEmpty', 'Vui lòng chọn loại tiệc', value => {
+        .test('checkEmpty', t('validate.type_party') || '', value => {
           return !_.isEmpty(value);
         }),
       quantityTable: yup
         .number()
-        .required('Vui lòng nhập số lượng bàn')
-        .min(1, 'Vui lòng nhập số lượng bàn')
-        .max(pLobbyInOrder.capacity, 'Số lượng bàn vượt quá số lượng của sảnh'),
+        .required(t('validate.capacity.empty') || '')
+        .min(1, t('validate.capacity.empty') || '')
+        .max(
+          pLobbyInOrder.capacity,
+          `${t('validate.capacity.empty')} ${pLobbyInOrder.capacity}` || '',
+        ),
     })
     .required();
 
   const theme = useTheme();
   const styles = useStyleSheet(themedStyles);
-  const {t} = useTranslation();
 
   const {
     control,
@@ -102,11 +110,13 @@ const BookingPage = ({
   }, [pTypeTimeOpts, watch('date')]);
 
   const handleChangeLobby = () => {
+    pSetIsBooking(false);
     replace('LobbyScreen');
   };
 
   const onSubmit = (data: IFormBooking) => {
     pUpdateInfoBooking(data);
+    pSetIsBooking(true);
     navigate('DishScreen');
   };
 
@@ -140,10 +150,16 @@ const BookingPage = ({
   }, []);
 
   return (
-    <ScrollView style={styles.root}>
+    <ScrollView>
       <TouchableWithoutFeedback onPress={Keyboard.dismiss}>
-        <>
-          <Header filter={false} title={t('screen.booking.title')} />
+        <View style={styles.root}>
+          <Header
+            onGoBack={() => {
+              pSetIsBooking(false);
+            }}
+            filter={false}
+            title={t('screen.booking.title')}
+          />
           <View style={styles.content}>
             <View style={styles.content_lobby}>
               <Image
@@ -230,8 +246,9 @@ const BookingPage = ({
               onPress={handleSubmit(onSubmit)}
             />
           </View>
-        </>
+        </View>
       </TouchableWithoutFeedback>
+      <Spinner isLoading={!!pIsLoading} />
     </ScrollView>
   );
 };
@@ -241,12 +258,14 @@ const mapStateToProps = (state: AppState) => ({
   pTypeTimeOpts: sTypeTimeOpts(state),
   pTypePartyOpts: sTypePartyOpts(state),
   pTimeLobbyBooked: state.lobby.weddingHallDetails,
+  pIsLoading: state.global.isLoading,
 });
 
 const mapDispatchToProps = (dispatch: AppDispatch) => ({
   pUpdateInfoBooking: (data: any) => dispatch(updateInfoBooking(data)),
   pGetTypeTime: () => dispatch(getTypeTime()),
   pGetTypeParty: () => dispatch(getTypeParty()),
+  pSetIsBooking: (data: boolean) => dispatch(setIsBooking(data)),
 });
 
 export default connect(mapStateToProps, mapDispatchToProps)(BookingPage);

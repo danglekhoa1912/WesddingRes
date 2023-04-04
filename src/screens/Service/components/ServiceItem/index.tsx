@@ -17,6 +17,7 @@ interface IServiceItem {
   pServiceListInMenu: IService[];
   pRemoveServiceToBooking: (service: IService) => void;
   pAddServiceToBooking: (service: IService) => void;
+  disable?: boolean;
 }
 
 const ServiceItem = ({
@@ -24,6 +25,7 @@ const ServiceItem = ({
   pRemoveServiceToBooking,
   pServiceListInMenu,
   service,
+  disable = false,
 }: IServiceItem) => {
   const styles = useStyleSheet(themedStyles);
   const theme = useTheme();
@@ -66,13 +68,15 @@ const ServiceItem = ({
             {service.serviceDescribe}
           </Text>
         </View>
-        <Button
-          backgroundColor={theme['color-primary-default']}
-          variant="outlined"
-          style={styles.button}
-          onPress={onPressService}
-          title={selected ? t('common.unselect') : t('common.select')}
-        />
+        {!disable && (
+          <Button
+            backgroundColor={theme['color-primary-default']}
+            variant="outlined"
+            style={styles.button}
+            onPress={onPressService}
+            title={selected ? t('common.unselect') : t('common.select')}
+          />
+        )}
       </View>
     </Card>
   );

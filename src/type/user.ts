@@ -14,3 +14,13 @@ export interface ILoginRes {
   password: string;
   tokenDevice?: string;
 }
+
+export interface IUserRes {
+  id?: number;
+  name: string;
+  birthday: Date | string;
+  email: string;
+  mobile: string;
+  role: string;
+  avatar: File;
+}

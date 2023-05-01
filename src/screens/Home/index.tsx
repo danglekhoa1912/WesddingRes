@@ -1,6 +1,11 @@
-import {ScrollView, View} from 'react-native';
+import {ScrollView, TouchableOpacity, View} from 'react-native';
 import React, {useEffect, useState} from 'react';
-import {StyleService, useStyleSheet, useTheme} from '@ui-kitten/components';
+import {
+  StyleService,
+  Text,
+  useStyleSheet,
+  useTheme,
+} from '@ui-kitten/components';
 import Carousel from 'react-native-snap-carousel';
 import {CarouselCardItem, ItemList} from './components';
 import {ITEM_WIDTH, SLIDER_WIDTH} from './components/CarouselCardItem';
@@ -28,6 +33,8 @@ import {ILobby} from '../../type/lobby';
 import {Spinner} from '../../components';
 import Layout from '../../constants/Layout';
 import {ISearchParam} from '../../type/common';
+import Icon from 'react-native-vector-icons/Entypo';
+import {navigate} from '../../utils/navigate';
 
 interface IHomePage {
   pGetLobbyList: (params: ISearchParam) => Promise<any>;
@@ -107,14 +114,14 @@ const HomePage = ({
             list={lobbyList}
           />
         )}
-        {!!dishList.length && (
+        {!!dishList?.length && (
           <ItemList
             navigateTo="DishScreen"
             label={t('screen.dish.title')}
             list={dishList}
           />
         )}
-        {!!serviceList.length && (
+        {!!serviceList?.length && (
           <ItemList
             navigateTo="ServiceScreen"
             label={t('screen.service.title')}
@@ -123,6 +130,13 @@ const HomePage = ({
         )}
       </ScrollView>
       <Spinner isLoading={!!pIsLoading} />
+      <TouchableOpacity
+        onPress={() => {
+          navigate('ChatScreen');
+        }}
+        style={styles.bubble}>
+        <Icon name="chat" color={theme['color-primary-500']} size={30} />
+      </TouchableOpacity>
     </>
   );
 };
@@ -138,5 +152,16 @@ export default connect(null, mapDispatchToProps)(HomePage);
 const themedStyles = StyleService.create({
   main: {
     backgroundColor: 'color-background',
+  },
+  bubble: {
+    borderRadius: 50,
+    position: 'absolute',
+    bottom: 10,
+    right: 10,
+    width: 70,
+    height: 70,
+    justifyContent: 'center',
+    alignItems: 'center',
+    backgroundColor: 'white',
   },
 });

@@ -1,3 +1,5 @@
+import {File} from 'buffer';
+
 export interface IService {
   id: number;
   name: string;
@@ -10,6 +12,6 @@ export interface IServiceRes {
   id?: number;
   name: string;
   serviceDescribe: string;
-  image: string;
+  image: File;
   price: number;
 }

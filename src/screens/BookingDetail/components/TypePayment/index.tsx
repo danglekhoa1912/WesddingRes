@@ -4,7 +4,7 @@ import {Card} from '../../../../components';
 import {useDispatch} from 'react-redux';
 import {StyleService, Text, useStyleSheet} from '@ui-kitten/components';
 import {CASH_TYPE, ITypePay} from '../../../../type/booking';
-import {Cash, MomoPay, ZaloPay} from '../../../../assets';
+import {MomoPay} from '../../../../assets';
 import {updateTypePay} from '../../../../store/booking';
 
 interface ITypePayment {
@@ -23,13 +23,13 @@ const TypePayment = ({selected, typePayment}: ITypePayment) => {
   const renderIcon = (type: CASH_TYPE) => {
     switch (type) {
       case CASH_TYPE.CASH:
-        return <Cash width={50} height={50} />;
+        return <MomoPay width={50} height={50} />;
       case CASH_TYPE.MOMO:
         return <MomoPay width={50} height={50} />;
       case CASH_TYPE.ZALO:
-        return <ZaloPay width={50} height={50} />;
+        return <MomoPay width={50} height={50} />;
       default:
-        return <Cash width={50} height={50} />;
+        return <MomoPay width={50} height={50} />;
     }
   };
 

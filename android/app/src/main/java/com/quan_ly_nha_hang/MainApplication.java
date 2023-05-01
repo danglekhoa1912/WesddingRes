@@ -1,8 +1,10 @@
 package com.quan_ly_nha_hang;
 import android.app.Activity;
+import android.content.Context;
 import android.content.res.Configuration;
 import expo.modules.ApplicationLifecycleDispatcher;
 import expo.modules.ReactNativeHostWrapper;
+import expo.modules.adapters.react.ReactModuleRegistryProvider;
 import vn.zalopay.sdk.Environment;
 import vn.zalopay.sdk.ZaloPaySDK;
 
@@ -17,6 +19,9 @@ import com.facebook.soloader.SoLoader;
 import com.quan_ly_nha_hang.Helper.AppInfo;
 import com.quan_ly_nha_hang.zpmodule.PayZaloBridge;
 
+
+
+import java.lang.reflect.InvocationTargetException;
 import java.util.List;
 
 public class MainApplication extends Application implements ReactApplication {
@@ -63,7 +68,8 @@ public class MainApplication extends Application implements ReactApplication {
   public void onCreate() {
       super.onCreate();
     SoLoader.init(this, /* native exopackage */ false);
-    if (BuildConfig.IS_NEW_ARCHITECTURE_ENABLED) {
+      initializeFlipper(this);
+      if (BuildConfig.IS_NEW_ARCHITECTURE_ENABLED) {
       // If you opted-in for the New Architecture, we load the native entry point for this app.
       DefaultNewArchitectureEntryPoint.load();
     }
@@ -77,4 +83,30 @@ public class MainApplication extends Application implements ReactApplication {
     super.onConfigurationChanged(newConfig);
     ApplicationLifecycleDispatcher.onConfigurationChanged(this, newConfig);
   }
+
+    /**
+     * Loads Flipper in React Native templates.
+     *
+     * @param context
+     */
+    private static void initializeFlipper(Context context) {
+        if (BuildConfig.DEBUG) {
+            try {
+        /*
+         We use reflection here to pick up the class that initializes Flipper,
+        since Flipper library is not available in release mode
+        */
+                Class<?> aClass = Class.forName("com.facebook.flipper.ReactNativeFlipper");
+                aClass.getMethod("initializeFlipper", Context.class).invoke(null, context);
+            } catch (ClassNotFoundException e) {
+                e.printStackTrace();
+            } catch (NoSuchMethodException e) {
+                e.printStackTrace();
+            } catch (IllegalAccessException e) {
+                e.printStackTrace();
+            } catch (InvocationTargetException e) {
+                e.printStackTrace();
+            }
+        }
+    }
 }

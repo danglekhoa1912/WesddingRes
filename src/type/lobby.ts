@@ -8,9 +8,9 @@ export interface ILobby {
   id: number;
 }
 
-export interface IILoobyBooked{
-	date:Date
-	session:number
+export interface IILoobyBooked {
+  date: Date;
+  session: number;
 }
 
 export interface ITypeParty {
@@ -22,8 +22,8 @@ export interface ITypeParty {
 export interface ILobbyRes {
   id?: number;
   name: string;
-  capacity: string;
+  capacity: number;
   describe: string;
   price: number;
-  image: string;
+  image: File;
 }

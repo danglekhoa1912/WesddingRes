@@ -49,6 +49,7 @@ export const updateDish = (dish: IDishRes) => {
     name: filename,
     type,
   });
+  console.log(formData);
   return AxiosClient.put(`admin/dish/change/id=${dish.id}`, formData, {
     headers: {
       'Content-Type': 'multipart/form-data',

@@ -12,8 +12,6 @@ import Intro8 from './intro8.jpg';
 import Intro9 from './intro9.jpg';
 import Intro10 from './intro10.jpg';
 import MomoPay from './Momo.svg';
-import Cash from './Cash.svg';
-import ZaloPay from './zalopay.svg';
 import Spinner from './loading.json';
 import VietNamFlag from './vietnam.png';
 import UKFlag from './united-kingdom.png';
@@ -33,8 +31,6 @@ export {
   Intro9,
   Intro10,
   MomoPay,
-  Cash,
-  ZaloPay,
   Spinner,
   VietNamFlag,
   UKFlag,

@@ -28,8 +28,12 @@ import {getStorage} from './src/utils/storage';
 import {useTranslation} from 'react-i18next';
 import SplashScreen from 'react-native-splash-screen';
 import {LogBox} from 'react-native';
+import database from '@react-native-firebase/database';
 
-LogBox.ignoreLogs(['Require cycle:']);
+LogBox.ignoreLogs([
+  'Require cycle:',
+  'source.uri should not be an empty string',
+]);
 
 type SectionProps = PropsWithChildren<{
   title: string;
@@ -39,6 +43,8 @@ PermissionsAndroid.request(PermissionsAndroid.PERMISSIONS.POST_NOTIFICATIONS);
 function App(): JSX.Element {
   const isDarkMode = useColorScheme() === 'dark';
   const {i18n} = useTranslation();
+  console.log(process.env.REACT_APP_BASE_URL);
+  console.log(1);
 
   //   const {t, i18n} = useTranslation();
   //   const [value, setValue] = useState();

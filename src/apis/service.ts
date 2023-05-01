@@ -13,18 +13,11 @@ export const getListService = (params: ISearchParam) => {
 };
 
 export const addService = (service: IServiceRes) => {
-  let filename = service.image.split('/').pop();
-  let match = /\.(\w+)$/.exec(filename || '');
-  let type = match ? `image/${match[1]}` : `image`;
   let formdata = new FormData();
   formdata.append('name', service.name);
   formdata.append('describe', service.serviceDescribe);
   formdata.append('price', service.price);
-  formdata.append('img', {
-    uri: service.image,
-    name: filename,
-    type,
-  });
+  formdata.append('img', service.image);
   return AxiosClient.post('admin/service/add', formdata, {
     headers: {
       'Content-Type': 'multipart/form-data',
@@ -33,19 +26,12 @@ export const addService = (service: IServiceRes) => {
 };
 
 export const updateService = (service: IServiceRes) => {
-  let filename = service.image.split('/').pop();
-  let match = /\.(\w+)$/.exec(filename || '');
-  let type = match ? `image/${match[1]}` : `image`;
   let formdata = new FormData();
   formdata.append('id', service.id);
   formdata.append('name', service.name);
   formdata.append('describe', service.serviceDescribe);
   formdata.append('price', service.price);
-  formdata.append('img', {
-    uri: service.image,
-    name: filename,
-    type,
-  });
+  formdata.append('img', service.image);
   return AxiosClient.post('admin/service/edit', formdata, {
     headers: {
       'Content-Type': 'multipart/form-data',

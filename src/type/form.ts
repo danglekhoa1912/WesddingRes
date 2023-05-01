@@ -1,3 +1,5 @@
+import {ISelectItem} from './common';
+
 export interface IFormLogin {
   userName: string;
   password: string;

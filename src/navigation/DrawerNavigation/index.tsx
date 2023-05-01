@@ -8,11 +8,11 @@ import {navigate} from '../../utils/navigate';
 import {useDispatch} from 'react-redux';
 import {AppDispatch} from '../../store';
 import {useEffect} from 'react';
-import {getUser} from '../../store/user/thunkApi';
 import ProfilePage from '../../screens/Profile';
 import SettingLanguage from '../../screens/Settinglanguage';
 import OrderHistoryPage from '../../screens/OrderHistory';
 import {useTranslation} from 'react-i18next';
+import {getUser} from '../../store/user/thunkApi';
 
 const Drawer = createDrawerNavigator();
 
@@ -24,7 +24,9 @@ function DrawerScreen() {
   useEffect(() => {
     getStorage('accessToken').then(data => {
       if (!data) navigate('LoginScreen');
-      else dispatch(getUser());
+      else {
+        dispatch(getUser());
+      }
     });
   }, []);
 

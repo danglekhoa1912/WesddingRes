@@ -1,8 +1,10 @@
 package com.quan_ly_nha_hang;
 import android.app.Activity;
+import android.content.Intent;
 import android.os.Bundle;
 
 import expo.modules.ReactActivityDelegateWrapper;
+import vn.zalopay.sdk.ZaloPaySDK;
 
 import com.facebook.react.ReactActivity;
 import com.facebook.react.ReactActivityDelegate;
@@ -44,5 +46,11 @@ public class MainActivity extends ReactActivity {
   protected void onCreate(Bundle savedInstanceState) {
     SplashScreen.show(this);
     super.onCreate(savedInstanceState);
+  }
+
+  @Override
+  public void onNewIntent(Intent intent) {
+    super.onNewIntent(intent);
+    ZaloPaySDK.getInstance().onResult(intent);
   }
 }

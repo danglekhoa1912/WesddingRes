@@ -15,6 +15,7 @@ import LobbyDetailPage from '../screens/LobbyDetail';
 import ServicePage from '../screens/Service';
 import BookingDetailPage from '../screens/BookingDetail';
 import OrderHistoryDetailPage from '../screens/OrderHistoryDetail';
+import RoomChat from '../screens/RoomChat';
 
 type RootStackParamList = {
   LobbyDetailScreen: {
@@ -49,6 +50,7 @@ const RootNavigate = () => {
       ))}
       <Stack.Screen name="DrawerScreen" component={DrawerScreen} />
       <Stack.Screen name="HomeScreen" component={HomePage} />
+      <Stack.Screen name="ChatScreen" component={RoomChat} />
       <Stack.Screen name="BookingScreen" component={BookingPage} />
       <Stack.Screen name="DishScreen" component={DishPage} />
       <Stack.Screen name="LobbyScreen" component={LobbyPage} />

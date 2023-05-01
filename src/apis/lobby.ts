@@ -13,19 +13,12 @@ export const getLobbyById = (id: number) => {
 };
 
 export const addLooby = (lobby: ILobbyRes) => {
-  let filename = lobby.image.split('/').pop();
-  let match = /\.(\w+)$/.exec(filename || '');
-  let type = match ? `image/${match[1]}` : `image`;
   let formdata = new FormData();
   formdata.append('name', lobby.name);
-  formdata.append('capacity', lobby.capacity);
+  formdata.append('capacity', lobby.capacity.toString());
   formdata.append('describe', lobby.describe);
-  formdata.append('price', lobby.price);
-  formdata.append('image', {
-    uri: lobby.image,
-    name: filename,
-    type,
-  });
+  formdata.append('price', lobby.price.toString());
+  formdata.append('image', lobby.image);
   return AxiosClient.post('admin/weddinghall/add', formdata, {
     headers: {
       'Content-Type': 'multipart/form-data',
@@ -34,20 +27,13 @@ export const addLooby = (lobby: ILobbyRes) => {
 };
 
 export const updateLobby = (lobby: ILobbyRes) => {
-  let filename = lobby.image.split('/').pop();
-  let match = /\.(\w+)$/.exec(filename || '');
-  let type = match ? `image/${match[1]}` : `image`;
   let formdata = new FormData();
   formdata.append('name', lobby.name);
-  formdata.append('capacity', lobby.capacity);
-  formdata.append('id', lobby.id);
+  formdata.append('capacity', lobby.capacity.toString());
+  formdata.append('id', lobby.id?.toString());
   formdata.append('describe', lobby.describe);
-  formdata.append('price', lobby.price);
-  formdata.append('image', {
-    uri: lobby.image,
-    name: filename,
-    type,
-  });
+  formdata.append('price', lobby.price.toString());
+  formdata.append('image', lobby.image);
   return AxiosClient.post('admin/weddinghall/edit', formdata, {
     headers: {
       'Content-Type': 'multipart/form-data',

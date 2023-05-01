@@ -14,18 +14,19 @@ import {IFormLogin} from '../../type/form';
 import {goBack, navigate} from '../../utils/navigate';
 import {AppDispatch, AppState} from '../../store';
 import {ILoginRes} from '../../type/user';
-import {loginUser} from '../../store/user/thunkApi';
 import {connect, useSelector} from 'react-redux';
 import messaging from '@react-native-firebase/messaging';
 import * as yup from 'yup';
 import {yupResolver} from '@hookform/resolvers/yup';
 import {useTranslation} from 'react-i18next';
+import {getUser, loginUser} from '../../store/user/thunkApi';
 
 interface ILoginPage {
   pLoginUser: (data: ILoginRes) => Promise<any>;
+  pGetUser: () => Promise<any>;
 }
 
-const LoginPage = ({pLoginUser}: ILoginPage) => {
+const LoginPage = ({pLoginUser, pGetUser}: ILoginPage) => {
   const {t} = useTranslation();
 
   const schema = yup
@@ -61,6 +62,7 @@ const LoginPage = ({pLoginUser}: ILoginPage) => {
         }).then(data => {
           if (!data?.error) {
             reset();
+            pGetUser();
             navigate('DrawerScreen');
           }
         });
@@ -118,6 +120,7 @@ const LoginPage = ({pLoginUser}: ILoginPage) => {
 
 const mapDispatchToProps = (dispatch: AppDispatch) => ({
   pLoginUser: (data: ILoginRes) => dispatch(loginUser(data)),
+  pGetUser: () => dispatch(getUser()),
 });
 
 export default connect(null, mapDispatchToProps)(LoginPage);

@@ -9,13 +9,25 @@ import {ILoginRes, IUser} from '../../type/user';
 import {saveStorage} from '../../utils/storage';
 import {withParamsToastCatcher} from '../ToastCatcher';
 import {ISearchParam} from '../../type/common';
+import {Platform} from 'react-native';
 
 export const loginUser = createAsyncThunk(
   'user/login',
   withParamsToastCatcher(async (data: ILoginRes) => {
-    return await UserApi.login(data);
+    console.log(data);
+    const result = await UserApi.login(data);
+    console.log(result);
+    return result;
     // return result.data;
   }, 'Login successfully'),
+);
+
+export const loginUserWeb = createAsyncThunk(
+  'user/loginWeb',
+  async (data: ILoginRes) => {
+    return await UserApi.login(data);
+    // return result.data;
+  },
 );
 
 export const registerUser = createAsyncThunk(

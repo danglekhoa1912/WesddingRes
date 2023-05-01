@@ -1,5 +1,11 @@
-import {ScrollView, StyleSheet, View} from 'react-native';
-import React, {useMemo} from 'react';
+import {
+  NativeEventEmitter,
+  NativeModules,
+  ScrollView,
+  StyleSheet,
+  View,
+} from 'react-native';
+import React, {useEffect, useMemo} from 'react';
 import {
   StyleService,
   Text,
@@ -24,7 +30,9 @@ import {ITypeParty} from '../../type/lobby';
 import {addOrder} from '../../store/booking/thunkApi';
 import {IUser} from '../../type/user';
 import {useTranslation} from 'react-i18next';
-
+import {paymentZalo} from '../../apis/booking';
+const {PayZaloBridge} = NativeModules;
+const payZaloBridgeEmitter = new NativeEventEmitter(PayZaloBridge);
 interface IBookingDetailPage {
   pCategories: ICategory[];
   pBooking: IBookingStore;
@@ -75,21 +83,36 @@ const BookingDetailPage = ({
   }, [order]);
 
   const handlePayment = () => {
-    pAddOrder({
-      orderDate: order.date,
-      amount: 0,
-      idUser: pUser.id || 0,
-      menu: order.menu.dishList.map(dish => dish.id),
-      note: '',
-      paymentStatus: false,
-      pwtId: order.time.value,
-      quantity: order.quantityTable,
-      service: order.service.serviceList.map(service => service.id),
-      type_party: order.type_party.value,
-      whId: order.lobby.id,
-      typePay: order.type_pay,
+    paymentZalo(10000).then(data => {
+      const payZP = NativeModules.PayZaloBridge;
+      payZP.payOrder(data.data.zp_trans_token);
     });
+    // pAddOrder({
+    //   orderDate: order.date,
+    //   amount: 0,
+    //   idUser: pUser.id || 0,
+    //   menu: order.menu.dishList.map(dish => dish.id),
+    //   note: '',
+    //   paymentStatus: false,
+    //   pwtId: order.time.value,
+    //   quantity: order.quantityTable,
+    //   service: order.service.serviceList.map(service => service.id),
+    //   type_party: order.type_party.value,
+    //   whId: order.lobby.id,
+    //   typePay: order.type_pay,
+    // });
   };
+
+  useEffect(() => {
+    payZaloBridgeEmitter.addListener('EventPayZalo', data => {
+      console.log(data);
+      if (data.returnCode == 1) {
+        console.log('Pay success!');
+      } else {
+        console.log('Pay errror! ' + data.returnCode);
+      }
+    });
+  }, []);
 
   return (
     <ScrollView contentContainerStyle={styles.container}>

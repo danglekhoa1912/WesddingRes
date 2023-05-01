@@ -7,6 +7,7 @@ import {
 import {store} from '../store';
 import {clearSpinner, hideSpinner, showSpinner} from '../store/global';
 import {getStorage} from '../utils/storage';
+import {Platform} from 'react-native';
 
 interface IRequestAxios extends AxiosRequestConfig {
   skipLoading?: boolean;
@@ -14,7 +15,9 @@ interface IRequestAxios extends AxiosRequestConfig {
 
 const onRequestConfig = async (config: IRequestAxios) => {
   if (!config.headers['Authorization']) {
-    const token = await getStorage('accessToken');
+    let token;
+    if (Platform.OS === 'web') token = localStorage.getItem('accessToken');
+    else token = await getStorage('accessToken');
     if (token) {
       config.headers['Authorization'] = `Bearer ${token}`;
     }

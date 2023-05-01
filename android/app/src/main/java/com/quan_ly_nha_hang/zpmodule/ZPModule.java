@@ -3,6 +3,7 @@ package com.quan_ly_nha_hang.zpmodule;
 import android.app.Activity;
 import android.content.Intent;
 import android.util.Log;
+import android.util.Printer;
 import android.widget.Toast;
 
 import com.facebook.react.bridge.Arguments;
@@ -34,6 +35,7 @@ public class ZPModule extends ReactContextBaseJavaModule {
             params.putString("appTransID", appTransID);
             params.putString("returnCode", PAYMENTSUCCESS);
             Toast.makeText(getCurrentActivity(), "Thanh toán thành công", Toast.LENGTH_SHORT).show();
+            Log.d("Test123","success");
             sendEvent(mReactContext, "EventPayZalo", params);
         }
 
@@ -55,6 +57,7 @@ public class ZPModule extends ReactContextBaseJavaModule {
             params.putString("returnCode",  PAYMENTFAILED);
             params.putString("zpTranstoken", transToken);
             params.putString("appTransID", appTransID);
+            Log.d("Test123", String.valueOf(zaloPayError));
             Toast.makeText(getCurrentActivity(), zaloPayError.name(), Toast.LENGTH_SHORT).show();
             Log.d("MyAppZalo", String.valueOf(zaloPayError));
             sendEvent(mReactContext, "EventPayZalo", params);
@@ -82,6 +85,8 @@ public class ZPModule extends ReactContextBaseJavaModule {
     @ReactMethod
     public void payOrder(String zpTransToken) {
         Activity currentActivity = getCurrentActivity();
+        Log.d("Test123","payment");
+
         ZaloPaySDK.getInstance().payOrder(currentActivity, zpTransToken, "demozpdk://app", listener);
     }
 
